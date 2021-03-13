@@ -2,10 +2,10 @@
 % Please edit documentation in R/deboscatapp.R
 \name{deboscatapp}
 \alias{deboscatapp}
-\title{function to launch the debosc app}
+\title{function to launch the deboscatapp}
 \usage{
 deboscatapp()
 }
 \description{
-function to launch the debosc app
+function to launch the deboscatapp
 }

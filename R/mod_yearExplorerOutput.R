@@ -60,14 +60,14 @@ mod_yearExplorer <- function(
     )
 
     map_palette <- leaflet::colorNumeric(
-      viridis::plasma(100),
-      county_map_data[[var_sel]],
+      palette = deboscat_palette(100, 'dark'),
+      domain = county_map_data[[var_sel]],
       na.color = 'transparent'
     )
 
     map_palette_legend <- leaflet::colorNumeric(
-      viridis::plasma(100),
-      county_map_data[[var_sel]],
+      palette = deboscat_palette(100, 'dark'),
+      domain = county_map_data[[var_sel]],
       na.color = 'transparent',
       reverse = TRUE
     )

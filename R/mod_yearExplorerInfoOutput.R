@@ -112,7 +112,8 @@ mod_yearExplorerInfo <- function(
         data = text_data
       ) +
       coord_equal() +
-      theme_void()
+      theme_void() +
+      scale_fill_gradientn(colours = deboscat_palette(3, 'dark'))
   })
 
   output$yearExplorerInfo_ts_plot <- shiny::renderPlot({
@@ -147,6 +148,7 @@ mod_yearExplorerInfo <- function(
         data = yearly_report_data_unselected,
         show.legend = FALSE
       ) +
+      scale_colour_manual(palette = deboscat_palette) +
       geom_line(
         aes(x = year, y = !!var_sel), colour = 'red', size = 1,
         data = yearly_report_data_selected,

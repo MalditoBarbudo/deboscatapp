@@ -102,6 +102,24 @@ cache_selected_choice <- function(choices, cache, key, default = choices[1]) {
   }
 }
 
+
+# palettes ----------------------------------------------------------------------------------------------
+
+deboscat_palette <- function(n, type = 'light') {
+  ## deboscat palette
+  deboscat_colors_dark <- c(green = '#91A63D', orange = '#F8931D', brown = '#643615')
+  deboscat_colors_light <- c(green = '#91C779', orange = '#F37521', brown = '#715138')
+
+  deboscat_palette_dark <- colorRampPalette(deboscat_colors_dark, interpolate = 'spline')
+  deboscat_palette_light <- colorRampPalette(deboscat_colors_light, interpolate = 'spline')
+
+  switch(
+    type,
+    'light' = deboscat_palette_light(n),
+    'dark' = deboscat_palette_dark(n)
+  )
+}
+
 # custom stats functions, capped to perform only with 3 or more
 # stat_capped <- function(x, .f, ...) {
 #   if (length(x[!is.na(x)]) < 3) {
