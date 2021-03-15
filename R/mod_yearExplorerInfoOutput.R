@@ -109,11 +109,13 @@ mod_yearExplorerInfo <- function(
       ) +
       geom_text(
         aes(x, y, label = county_name),
-        data = text_data
+        data = text_data, colour = '#E8EAEB'
       ) +
-      coord_equal() +
+      # coord_equal() +
+      scale_fill_gradientn(colours = deboscat_palette(3, 'dark')) +
+      scale_x_continuous(expand = expansion(mult = 1) ) +
       theme_void() +
-      scale_fill_gradientn(colours = deboscat_palette(3, 'dark'))
+      theme(plot.background = element_rect(fill = '#1C1C20'))
   })
 
   output$yearExplorerInfo_ts_plot <- shiny::renderPlot({
@@ -150,14 +152,28 @@ mod_yearExplorerInfo <- function(
       ) +
       scale_colour_manual(palette = deboscat_palette) +
       geom_line(
-        aes(x = year, y = !!var_sel), colour = 'red', size = 1,
+        aes(x = year, y = !!var_sel), colour = deboscat_palette(1, 'light'), size = 1,
         data = yearly_report_data_selected,
         show.legend = FALSE
       ) +
       geom_point(
-        aes(x = year, y = !!var_sel), colour = 'red', size = 4,
+        aes(x = year, y = !!var_sel), colour = deboscat_palette(1, 'light'), size = 4,
         data = yearly_report_data_selected,
         show.legend = FALSE
+      ) +
+      theme_minimal() +
+      theme(
+        plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(color = '#E8EAEB'),
+        axis.text = element_text(colour = '#E8EAEB', size = 14),
+        axis.title = element_text(colour = '#E8EAEB', size = 14),
+        strip.background = element_rect(fill = '#1C1C20', colour = '#E8EAEB'),
+        strip.text = element_text(colour = '#E8EAEB', size = 14),
+        legend.position = 'bottom',
+        legend.text = element_text(colour = '#E8EAEB', size = 14),
+        legend.title = element_blank()
       )
 
   })

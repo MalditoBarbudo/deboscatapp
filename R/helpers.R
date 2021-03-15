@@ -27,18 +27,44 @@ create_affectation_plot <- function(episodes_data) {
     theme(legend.position = 'bottom') +
     scale_fill_manual(values = deboscat_palette(4, 'light')) +
     scale_colour_manual(values = deboscat_palette(4, 'light')) +
-    theme_minimal()
+    theme_minimal() +
+    theme(
+      plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(color = '#E8EAEB'),
+      axis.text = element_text(colour = '#E8EAEB', size = 14),
+      axis.title = element_text(colour = '#E8EAEB', size = 14),
+      strip.background = element_rect(fill = '#1C1C20', colour = '#E8EAEB'),
+      strip.text = element_text(colour = '#E8EAEB', size = 14),
+      legend.position = 'bottom',
+      legend.text = element_text(colour = '#E8EAEB', size = 14),
+      legend.title = element_blank()
+    )
 }
 
 create_affectation_trend_plot <- function(episodes_data) {
   episodes_data %>%
     ggplot(aes(x = year, y = cicatrization_index)) +
-    geom_line(colour = deboscat_palette(3)[1]) +
+    geom_line(colour = deboscat_palette(3)[1], size = 1) +
     geom_point(size = 4, colour = deboscat_palette(3)[3]) +
     scale_x_continuous(breaks = unique(episodes_data$year), labels = unique(episodes_data$year)) +
     facet_grid(rows = dplyr::vars(episode_id)) +
     scale_y_continuous(limits = c(0,100)) +
-    theme_minimal()
+    theme_minimal() +
+    theme(
+      plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(color = '#E8EAEB'),
+      axis.text = element_text(colour = '#E8EAEB', size = 14),
+      axis.title = element_text(colour = '#E8EAEB', size = 14),
+      strip.background = element_rect(fill = '#1C1C20', colour = '#E8EAEB'),
+      strip.text = element_text(colour = '#E8EAEB', size = 14),
+      legend.position = 'bottom',
+      legend.text = element_text(colour = '#E8EAEB', size = 14),
+      legend.title = element_blank()
+    )
 }
 
 create_spatial_plot <- function(episodes_data) {
@@ -48,10 +74,24 @@ create_spatial_plot <- function(episodes_data) {
     ggplot() +
     geom_sf(aes(fill = episode_area), alpha = 0.9) +
     coord_sf(label_axes = '--EN') +
-    facet_grid(cols = vars(year), rows = dplyr::vars(episode_id)) +
+    facet_grid(rows = vars(year), cols = dplyr::vars(episode_id)) +
     theme(legend.position = 'bottom', axis.text.x = element_text(angle = 90)) +
     scale_fill_gradientn(colours = deboscat_palette(3, 'dark')) +
-    theme_minimal()
+    theme_minimal() +
+    theme(
+      plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(color = '#E8EAEB'),
+      axis.text = element_text(colour = '#E8EAEB', size = 12),
+      axis.text.x = element_text(colour = '#E8EAEB', size = 12, angle = 45),
+      axis.title = element_text(colour = '#E8EAEB', size = 12),
+      strip.background = element_rect(fill = '#1C1C20', colour = '#E8EAEB'),
+      strip.text = element_text(colour = '#E8EAEB', size = 12),
+      legend.position = 'bottom',
+      legend.text = element_text(colour = '#E8EAEB', size = 12, angle = 45),
+      legend.title = element_blank()
+    )
 }
 
 
