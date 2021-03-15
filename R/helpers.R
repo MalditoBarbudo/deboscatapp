@@ -24,17 +24,21 @@ create_affectation_plot <- function(episodes_data) {
     facet_grid(rows = dplyr::vars(episode_id), cols = dplyr::vars(species_id)) +
     scale_x_continuous(breaks = unique(episodes_data$year), labels = unique(episodes_data$year)) +
     scale_y_continuous(limits = c(0,100)) +
-    theme(legend.position = 'bottom')
+    theme(legend.position = 'bottom') +
+    scale_fill_manual(values = deboscat_palette(4, 'light')) +
+    scale_colour_manual(values = deboscat_palette(4, 'light')) +
+    theme_minimal()
 }
 
 create_affectation_trend_plot <- function(episodes_data) {
   episodes_data %>%
     ggplot(aes(x = year, y = cicatrization_index)) +
-    geom_line() +
-    geom_point(size = 4) +
+    geom_line(colour = deboscat_palette(3)[1]) +
+    geom_point(size = 4, colour = deboscat_palette(3)[3]) +
     scale_x_continuous(breaks = unique(episodes_data$year), labels = unique(episodes_data$year)) +
     facet_grid(rows = dplyr::vars(episode_id)) +
-    scale_y_continuous(limits = c(0,100))
+    scale_y_continuous(limits = c(0,100)) +
+    theme_minimal()
 }
 
 create_spatial_plot <- function(episodes_data) {
@@ -45,7 +49,9 @@ create_spatial_plot <- function(episodes_data) {
     geom_sf(aes(fill = episode_area), alpha = 0.9) +
     coord_sf(label_axes = '--EN') +
     facet_grid(cols = vars(year), rows = dplyr::vars(episode_id)) +
-    theme(legend.position = 'bottom', axis.text.x = element_text(angle = 90))
+    theme(legend.position = 'bottom', axis.text.x = element_text(angle = 90)) +
+    scale_fill_gradientn(colours = deboscat_palette(3, 'dark')) +
+    theme_minimal()
 }
 
 

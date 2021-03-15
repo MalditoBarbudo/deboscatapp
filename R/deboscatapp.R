@@ -181,7 +181,7 @@ $(document).on('shiny:disconnected', function(event) {
     })
 
     # cache ####
-    inputs_cache <- shiny::memoryCache(evict = 'fifo')
+    inputs_cache <- cachem::cache_mem(evict = 'fifo')
 
     # modules ####
     year_explorer_data_reactives <- shiny::callModule(

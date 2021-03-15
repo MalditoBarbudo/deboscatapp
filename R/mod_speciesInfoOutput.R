@@ -107,7 +107,8 @@ mod_speciesInfo <- function(
         data = text_data
       ) +
       coord_equal() +
-      theme_void()
+      theme_void() +
+      scale_fill_gradientn(colours = deboscat_palette(3, 'dark'))
   })
 
   output$speciesInfo_ts_plot <- shiny::renderPlot({
@@ -142,6 +143,7 @@ mod_speciesInfo <- function(
         data = deboscat_species_year_affectation_table_unselected,
         show.legend = FALSE
       ) +
+      scale_colour_manual(palette = deboscat_palette) +
       geom_line(
         aes(x = year, y = !!var_sel), colour = 'red', size = 1,
         data = deboscat_species_year_affectation_table_selected,
