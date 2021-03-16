@@ -50,13 +50,11 @@ mod_speciesInfo <- function(
     shiny::tagList(
       shiny::fluidRow(
         shiny::column(
-          width = 12, align = 'center',
+          width = 4, align = 'center',
           shiny::plotOutput(ns('speciesInfo_packing_plot'))
-        )
-      ),
-      shiny::fluidRow(
+        ),
         shiny::column(
-          width = 12, align = 'center',
+          width = 8, align = 'center',
           shiny::plotOutput(ns('speciesInfo_ts_plot'))
         )
       )
@@ -108,9 +106,9 @@ mod_speciesInfo <- function(
       ) +
       # coord_equal() +
       scale_fill_gradientn(colours = deboscat_palette(3, 'dark')) +
-      scale_x_continuous(expand = expansion(mult = 1) ) +
+      # scale_x_continuous(expand = expansion(mult = 1) ) +
       theme_void() +
-      theme(plot.background = element_rect(fill = '#1C1C20'))
+      theme(plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'))
   })
 
   output$speciesInfo_ts_plot <- shiny::renderPlot({

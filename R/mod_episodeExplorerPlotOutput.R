@@ -49,28 +49,43 @@ mod_episodeExplorerPlot <- function(
         value = 'episode_explorer_plot_tab',
         shiny::tagList(
           shiny::fluidRow(
+            shiny::h4(translate_app('affectation_general_info')),
             shiny::column(
-              width = 9,
-              shiny::h4(translate_app('affectation_general_info')),
-              shiny::fluidRow(
-                shiny::column(
-                  width = 4,
-                  gt::gt_output(ns('epiexp_general_info'))
-                ),
-                shiny::column(
-                  width = 8,
-                  shiny::plotOutput(ns('epiexp_affectation_trend_plot'), height = 200)
-                )
-              ),
-              shiny::h4(translate_app('affectation_plot', lang())),
-              shiny::plotOutput(ns('epiexp_affectation_plot'), height = 300)
+              width = 4,
+              gt::gt_output(ns('epiexp_general_info'))
             ),
             shiny::column(
-              width = 3,
-              shiny::h4(translate_app('spatial_plot', lang())),
-              shiny::plotOutput(ns('epiexp_spatial_plot'), height = 200*year_number)
+              width = 8,
+              shiny::plotOutput(ns('epiexp_affectation_trend_plot'), height = 200)
             )
-          )
+          ),
+          shiny::h4(translate_app('affectation_plot', lang())),
+          shiny::plotOutput(ns('epiexp_affectation_plot'), height = 300),
+          shiny::h4(translate_app('spatial_plot', lang())),
+          shiny::plotOutput(ns('epiexp_spatial_plot'), height =  280 + (280 * (year_number %/% 4)))
+          # shiny::fluidRow(
+          #   shiny::column(
+          #     width = 9,
+          #     shiny::h4(translate_app('affectation_general_info')),
+          #     shiny::fluidRow(
+          #       shiny::column(
+          #         width = 4,
+          #         gt::gt_output(ns('epiexp_general_info'))
+          #       ),
+          #       shiny::column(
+          #         width = 8,
+          #         shiny::plotOutput(ns('epiexp_affectation_trend_plot'), height = 200)
+          #       )
+          #     ),
+          #     shiny::h4(translate_app('affectation_plot', lang())),
+          #     shiny::plotOutput(ns('epiexp_affectation_plot'), height = 300)
+          #   ),
+          #   shiny::column(
+          #     width = 3,
+          #     shiny::h4(translate_app('spatial_plot', lang())),
+          #     shiny::plotOutput(ns('epiexp_spatial_plot'), height = 200*year_number)
+          #   )
+          # )
         )
 
 

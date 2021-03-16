@@ -12,7 +12,6 @@ mod_yearExplorerOutput <- function(id) {
 
   # UI ####
   shiny::tagList(
-    shiny::br(),
     shiny::uiOutput(ns('year_explorer_container'))
   )
 }
@@ -41,7 +40,7 @@ mod_yearExplorer <- function(
       shiny::tabPanel(
         title = translate_app('map', lang()),
         value = 'year_explorer_map_tab',
-        leaflet::leafletOutput(ns('year_explorer_map'))
+        leaflet::leafletOutput(ns('year_explorer_map'), height = 600)
       ),
       shiny::tabPanel(
         title = translate_app('table', lang()),

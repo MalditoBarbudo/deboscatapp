@@ -12,7 +12,7 @@ mod_yearExplorerInfoOutput <- function(id) {
   # ui skeleton (rows)
   shiny::tagList(
     shiny::fluidRow(
-      shiny::br(),
+      # shiny::br(),
       shiny::h4(shiny::textOutput(ns('mod_yearExplorerInfo_title'))),
       shiny::uiOutput(ns("mod_yearExplorerInfo_panel"))
     )
@@ -42,7 +42,8 @@ mod_yearExplorerInfo <- function(
     glue::glue("{county_name} {title_phrase}")
   })
 
-  # uiOutput
+
+  # uiOutput ----------------------------------------------------------------------------------------------
   output$mod_yearExplorerInfo_panel <- shiny::renderUI({
 
     ns <- session$ns
@@ -50,13 +51,11 @@ mod_yearExplorerInfo <- function(
     shiny::tagList(
       shiny::fluidRow(
         shiny::column(
-          width = 12, align = 'center',
+          width = 4, align = 'center',
           shiny::plotOutput(ns('yearExplorerInfo_packing_plot'))
-        )
-      ),
-      shiny::fluidRow(
+        ),
         shiny::column(
-          width = 12, align = 'center',
+          width = 8, align = 'center',
           shiny::plotOutput(ns('yearExplorerInfo_ts_plot'))
         )
       )
@@ -113,9 +112,9 @@ mod_yearExplorerInfo <- function(
       ) +
       # coord_equal() +
       scale_fill_gradientn(colours = deboscat_palette(3, 'dark')) +
-      scale_x_continuous(expand = expansion(mult = 1) ) +
+      # scale_x_continuous(expand = expansion(mult = 1) ) +
       theme_void() +
-      theme(plot.background = element_rect(fill = '#1C1C20'))
+      theme(plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'))
   })
 
   output$yearExplorerInfo_ts_plot <- shiny::renderPlot({

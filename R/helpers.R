@@ -73,25 +73,23 @@ create_spatial_plot <- function(episodes_data) {
     dplyr::distinct(.keep_all = TRUE) %>%
     ggplot() +
     geom_sf(aes(fill = episode_area), alpha = 0.9) +
-    coord_sf(label_axes = '--EN') +
-    facet_grid(rows = vars(year), cols = dplyr::vars(episode_id)) +
+    coord_sf(datum = sf::st_crs(episodes_data)) +
+    facet_wrap(vars(year), ncol = 4) +
     theme(legend.position = 'bottom', axis.text.x = element_text(angle = 90)) +
     scale_fill_gradientn(colours = deboscat_palette(3, 'dark')) +
     theme_minimal() +
     theme(
       plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
-      panel.grid.minor = element_blank(),
-      panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_line(color = '#E8EAEB'),
-      axis.text = element_text(colour = '#E8EAEB', size = 12),
-      axis.text.x = element_text(colour = '#E8EAEB', size = 12, angle = 45),
-      axis.title = element_text(colour = '#E8EAEB', size = 12),
+      panel.grid = element_line(color = '#E8EAEB', size = 0.2),
+      axis.text = element_text(colour = '#E8EAEB', size = 8),
+      axis.text.x = element_text(colour = '#E8EAEB', size = 8, angle = 45),
       strip.background = element_rect(fill = '#1C1C20', colour = '#E8EAEB'),
       strip.text = element_text(colour = '#E8EAEB', size = 12),
-      legend.position = 'bottom',
-      legend.text = element_text(colour = '#E8EAEB', size = 12, angle = 45),
+      legend.position = 'right',
+      legend.text = element_text(colour = '#E8EAEB', size = 10),
       legend.title = element_blank()
     )
+
 }
 
 
