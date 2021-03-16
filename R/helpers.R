@@ -70,7 +70,8 @@ create_affectation_trend_plot <- function(episodes_data) {
 create_spatial_plot <- function(episodes_data) {
   episodes_data %>%
     dplyr::select(year, episode_id, episode_area, geom) %>%
-    dplyr::distinct(.keep_all = TRUE) %>%
+    dplyr::group_by(year, episode_id) %>%
+    dplyr::slice(1) %>%
     ggplot() +
     geom_sf(aes(fill = episode_area), alpha = 0.9) +
     coord_sf(datum = sf::st_crs(episodes_data)) +

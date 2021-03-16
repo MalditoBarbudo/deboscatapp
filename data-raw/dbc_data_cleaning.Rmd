@@ -161,9 +161,19 @@ year in the code and the year in the sampling date. We check those to see what h
   - "15-004", "15-008", "16-001": Error is in previous dates (before 2014)
 
 
-Also, as we fix the year mismatches, we will pre clean the raw data:
+##### Extra
+
+In the "20-014" episode for 2018, there is no polygon, only data, so this episode has an area of zero.
+We are gonna take the 2019 polygon to use it
+  
+  
+Also, as we fix the year mismatches and the '20-014', we will pre clean the raw data:
 
 ```{r year_mismatches_fix}
+data_raw_2014_2020[which(data_raw_2014_2020$episode_id == '20-014' & data_raw_2014_2020$year == 2018), 'areaafectada'] <-
+  data_raw_2014_2020[which(data_raw_2014_2020$episode_id == '20-014' & data_raw_2014_2020$year == 2019), 'areaafectada']
+
+
 data_dirty_2014_2020 <-
   data_raw_2014_2020 %>%
   split(.$episode_id) %>%
@@ -214,6 +224,10 @@ data_dirty_2014_2020 <-
     dplyr::everything(), -tipusafectacio, -year_id, -dataobservacio
   )
 ```
+
+
+
+
 
 # 2012 data
 
@@ -1728,7 +1742,7 @@ data_dirty_deboscat <- data_dirty_deboscat %>%
 
 # 2018 data
 
-We repeat the process for 2018 data:
+We repeat the process for 2018 data, but:
 
 ```{r data_2018_process}
 data_dirty_2018 <- data_dirty_2014_2020 %>%
@@ -1739,6 +1753,7 @@ data_dirty_2018 <- data_dirty_2014_2020 %>%
   } %>%
   create_data_dirty(data_dirty_deboscat)
 ```
+
 
 ## 2018 data checks
 
@@ -1916,20 +1931,6 @@ data_dirty_deboscat <- data_dirty_deboscat %>%
     )
   )
 ```
-
-
-#### Extra
-
-In the "20-014" episode, there is no polygon, only data, so this episode has an area of zero. We need to
-convert it to NA to avoid interpretation of zero area.
-
-```{r extra_2018}
-data_dirty_2018_ok <- data_dirty_2018_ok %>%
-  dplyr::mutate(
-    episode_area = if_else(episode_id == "20-014", NA_real_, episode_area)
-  )
-```
-
 
 ## Clean data for 2018
 
