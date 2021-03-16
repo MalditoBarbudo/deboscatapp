@@ -25,4 +25,5 @@ Imports:
     tibble,
     rlang,
     purrr,
-    magrittr
+    magrittr,
+    gt
