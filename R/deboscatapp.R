@@ -96,73 +96,58 @@ $(document).on('shiny:disconnected', function(event) {
         )
       ),
 
-      # main tab
+      # 1. yearly report by county
+      # This will be a sidebar layout. SIdebar will allow to select year and to apply or not a species
+      # breakdown (warning about calculation of the data). In case of breakdown a selector of species
+      # appear.
+      # Main panel will have a map with the counties, and the user will select the variable to colour the
+      # map.
       shiny::tabPanel(
-        title = mod_tab_translateOutput('main_tab_translation'),
-        value = 'main_tab',
-        ## the explore panel is itself a tabsetpanel for the different reports:
-        ## 1. Episode explorer
-        ## 3. Yearly report
-        ## 2. Species report
-        ## 3. Counties report
-        ## 4. ...
-        ## tab Panel
-        shiny::tabsetPanel(
-          id = 'reports', type = 'pills',
-          # 1. yearly report by county
-          # This will be a sidebar layout. SIdebar will allow to select year and to apply or not a species
-          # breakdown (warning about calculation of the data). In case of breakdown a selector of species
-          # appear.
-          # Main panel will have a map with the counties, and the user will select the variable to colour the
-          # map.
-          shiny::tabPanel(
-            title = mod_tab_translateOutput('year_report_tab_translation'),
-            value = 'year_explorer',
-            shiny::sidebarLayout(
-              # options
-              position = 'left', fluid = TRUE,
-              sidebarPanel = shiny::sidebarPanel(
-                width = 3,
-                mod_yearExplorerDataInput('mod_yearExplorerDataInput')
-              ),
-              mainPanel = shiny::mainPanel(
-                width = 9,
-                mod_yearExplorerOutput('mod_yearExplorerOutput')
-              )
-            )
-          ), # end of year explorer tab
-          # 2. episode report
-          # This will be a sidebar layout. The sidebar will allow to filter episodes
-          # by year, county, species and ¿others?. The main panel will be a graphical
-          # report of the episode/s:
-          #   a) affectation plots
-          #   b) spatial plots
-          #   c) affectation trend
-          # If more than one episode is selected, the episodes will be faceted in rows for
-          # each of the diagnostic plots
-          shiny::tabPanel(
-            title = mod_tab_translateOutput('episode_report_tab_translation'),
-            value = 'episode_explorer',
-            shiny::sidebarLayout(
-              # options
-              position = 'left', fluid = TRUE,
-              sidebarPanel = shiny::sidebarPanel(
-                # The inputs for filtering will act as accumulative filters, returning a list of episodes
-                # (episode_id) to another input to select the ones we want the report about. We will do this
-                # in a module
-                width = 3,
-                mod_episodeExplorerDataInput('mod_episodeExplorerDataInput')
-              ),
-              mainPanel = shiny::mainPanel(
-                # main panel will use another module to show the plots, one that takes the data and create the
-                # plots
-                width = 9,
-                mod_episodeExplorerPlotOutput('mod_episodeExplorerPlotOutput')
-              )
-            ) # end of sidebar Layout
-          ) # End of episode explorer tab
-        ) # end of tabset panel,
-      ), # end of tabPanel
+        title = mod_tab_translateOutput('year_report_tab_translation'),
+        value = 'year_explorer',
+        shiny::sidebarLayout(
+          # options
+          position = 'left', fluid = TRUE,
+          sidebarPanel = shiny::sidebarPanel(
+            width = 3,
+            mod_yearExplorerDataInput('mod_yearExplorerDataInput')
+          ),
+          mainPanel = shiny::mainPanel(
+            width = 9,
+            mod_yearExplorerOutput('mod_yearExplorerOutput')
+          )
+        )
+      ), # end of year explorer tab
+      # 2. episode report
+      # This will be a sidebar layout. The sidebar will allow to filter episodes
+      # by year, county, species and ¿others?. The main panel will be a graphical
+      # report of the episode/s:
+      #   a) affectation plots
+      #   b) spatial plots
+      #   c) affectation trend
+      # If more than one episode is selected, the episodes will be faceted in rows for
+      # each of the diagnostic plots
+      shiny::tabPanel(
+        title = mod_tab_translateOutput('episode_report_tab_translation'),
+        value = 'episode_explorer',
+        shiny::sidebarLayout(
+          # options
+          position = 'left', fluid = TRUE,
+          sidebarPanel = shiny::sidebarPanel(
+            # The inputs for filtering will act as accumulative filters, returning a list of episodes
+            # (episode_id) to another input to select the ones we want the report about. We will do this
+            # in a module
+            width = 3,
+            mod_episodeExplorerDataInput('mod_episodeExplorerDataInput')
+          ),
+          mainPanel = shiny::mainPanel(
+            # main panel will use another module to show the plots, one that takes the data and create the
+            # plots
+            width = 9,
+            mod_episodeExplorerPlotOutput('mod_episodeExplorerPlotOutput')
+          )
+        ) # end of sidebar Layout
+      ), # End of episode explorer tab
       shiny::tabPanel(
         title = mod_tab_translateOutput('tech_specs_translation'),
         value = 'tech_spec_panel'

@@ -201,7 +201,7 @@ mod_episodeExplorerData <- function(
       if (click_info$group == 'episodes') {
         # update active tab
         shiny::updateTabsetPanel(
-          parent_session, 'reports', selected = 'episode_explorer'
+          parent_session, 'nav', selected = 'episode_explorer'
         )
       }
     }
