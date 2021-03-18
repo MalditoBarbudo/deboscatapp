@@ -6,4 +6,5 @@ data-raw/*.pdf
 data-raw/coords_and_area_for*
 data-raw/*.csv
 data-raw/*.gpkg
+data-raw/*.pptx
 
