@@ -8,14 +8,22 @@ library(sf)
 # Here will be the code to extract the table from the original deboscat db when aailable
 
 
+one_year_episodes_to_remove <-
+  sf::read_sf('data-raw/deboscat_table.gpkg') %>%
+  as_tibble() %>%
+  group_by(episode_id, year) %>%
+  summarise(episode_id = first(episode_id), year = first(year)) %>%
+  group_by(episode_id) %>%
+  summarise(n = n(), year = first(year)) %>%
+  filter(n < 2, year != 2020) %>%
+  pull(episode_id)
+
 # temp table
 deboscat_table <-
   sf::read_sf('data-raw/deboscat_table.gpkg') %>%
   sf::st_transform(crs = 4326) %>%
-  dplyr::filter(
-    !stringr::str_detect(episode_id, '^31-'),
-    !stringr::str_detect(episode_id, '^32-')
-  )
+  # remove the one years that are not from 2020, as they usually are lingering rests of the cleaning
+  dplyr::filter(!(episode_id %in% one_year_episodes_to_remove))
 
 ## app thesaurus ####
 app_translations <- tibble::tribble(
@@ -286,3 +294,4 @@ usethis::use_data(
   deboscat_species_year_affectation_table, deboscat_counties_year_affectation_table,
   app_translations, overwrite = TRUE, internal = TRUE
 )
+
