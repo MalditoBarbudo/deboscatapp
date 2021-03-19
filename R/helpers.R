@@ -120,21 +120,19 @@ create_packing_plot <- function(
   ggplot() +
     geom_polygon(
       aes(x, y, group = id, fill = fill_val),
-      colour = 'black', alpha = 0.6, show.legend = FALSE,
+      colour = '#1C1C20', alpha = 0.6, show.legend = FALSE,
       data = packing_plot_data_unselected
     ) +
     geom_polygon(
       aes(x, y, group = id, fill = fill_val),
-      colour = 'red', alpha = 0.6, show.legend = FALSE, size = 1,
+      colour = deboscat_palette(1, 'light'), alpha = 0.6, show.legend = FALSE, size = 1,
       data = packing_plot_data_selected
     ) +
     geom_text(
       aes(x, y, label = !! type_variable),
       data = packing_text_data, colour = '#E8EAEB'
     ) +
-    # coord_equal() +
     scale_fill_gradientn(colours = deboscat_palette(3, 'light')) +
-    # scale_x_continuous(expand = expansion(mult = 1) ) +
     theme_void() +
     theme(plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'))
 }
