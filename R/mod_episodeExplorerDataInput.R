@@ -179,7 +179,7 @@ mod_episodeExplorerData <- function(
       shinyWidgets::updatePickerInput(
         session = session,
         'episode_explorer_episode_sel',
-        label = translate_app('episode_explorer_episode_sel', lang()),
+        label = NULL,
         choices = episode_list(),
         selected = cache_selected_choice(
           choices = episode_list(),

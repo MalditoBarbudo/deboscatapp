@@ -73,7 +73,7 @@ mod_yearExplorerData <- function(
       ),
       shinyWidgets::pickerInput(
         ns('year_explorer_new_episodes_sel'),
-        label = translate_app('year_explorer_new_episodes_sel', lang),
+        label = translate_app('year_explorer_new_episodes_sel', lang()),
         choices = new_episodes_choices,
         options = shinyWidgets::pickerOptions(
           actionsBox = FALSE,
@@ -98,7 +98,8 @@ mod_yearExplorerData <- function(
       ),
       shinyjs::hidden(
         shiny::div(
-          id = ns('species_breakdown_warning'), align = 'center', style = 'color: red;',
+          id = ns('species_breakdown_warning'), align = 'center',
+          style = glue::glue("color: {deboscat_palette(3, 'dark')[2]};"),
           shiny::p(shiny::icon('exclamation-triangle')),
           shiny::p(translate_app('species_breakdown_warning', lang()))
         )
@@ -107,7 +108,7 @@ mod_yearExplorerData <- function(
       shiny::h4(translate_app('h4_yearexp_episodes_viz_sel', lang())),
       shinyWidgets::pickerInput(
         ns('year_explorer_var_sel'),
-        label = translate_app('year_explorer_var_sel', lang),
+        label = translate_app('year_explorer_var_sel', lang()),
         choices = var_choices,
         selected = cache_selected_choice(
           choices = var_choices,

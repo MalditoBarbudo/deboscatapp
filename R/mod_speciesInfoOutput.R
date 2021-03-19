@@ -64,51 +64,14 @@ mod_speciesInfo <- function(
 
   # packing plot
   output$speciesInfo_packing_plot <- shiny::renderPlot({
-
-    # data
-    species_data <- deboscat_species_year_affectation_table %>%
-      dplyr::filter(year == req(year_explorer_data_reactives$year_sel))
-
-    # inputs
-    species_sel <- shiny::req(year_explorer_data_reactives$species_sel)
-    input_var_sel <- shiny::req(year_explorer_data_reactives$var_sel)
-    new_episodes_sel <- shiny::req(year_explorer_data_reactives$new_episodes_sel)
-    var_sel <- glue::glue("{input_var_sel}_{new_episodes_sel}")
-
-    # packcircles layout and data
-    packing_data <- packcircles::circleProgressiveLayout(
-      species_data[[var_sel]], sizetype = 'area'
+    create_packing_plot(
+      data = deboscat_species_year_affectation_table,
+      selected_value = shiny::req(year_explorer_data_reactives$species_sel),
+      type_variable = 'species_id',
+      affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
+      new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),
+      year = shiny::req(year_explorer_data_reactives$year_sel)
     )
-    packing_plot_data <- packcircles::circleLayoutVertices(packing_data, npoints = 100) %>%
-      dplyr::mutate(fill_val = species_data[[var_sel]][id])
-    packing_plot_data_selected <- packing_plot_data %>%
-      dplyr::filter(species_data[['species_id']][id] == species_sel)
-    packing_plot_data_unselected <- packing_plot_data %>%
-      dplyr::filter(species_data[['species_id']][id] != species_sel)
-    text_data <- cbind(species_data, packing_data) %>%
-      dplyr::filter(radius/max(radius, na.rm = TRUE) > 0.20 | species_id == species_sel)
-
-    # plot
-    ggplot() +
-      geom_polygon(
-        aes(x, y, group = id, fill = fill_val),
-        colour = 'black', alpha = 0.6, show.legend = FALSE,
-        data = packing_plot_data_unselected
-      ) +
-      geom_polygon(
-        aes(x, y, group = id, fill = fill_val),
-        colour = 'red', alpha = 0.6, show.legend = FALSE, size = 1,
-        data = packing_plot_data_selected
-      ) +
-      geom_text(
-        aes(x, y, label = species_id),
-        data = text_data
-      ) +
-      # coord_equal() +
-      scale_fill_gradientn(colours = deboscat_palette(3, 'dark')) +
-      # scale_x_continuous(expand = expansion(mult = 1) ) +
-      theme_void() +
-      theme(plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'))
   })
 
   output$speciesInfo_ts_plot <- shiny::renderPlot({

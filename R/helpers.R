@@ -93,6 +93,50 @@ create_spatial_plot <- function(episodes_data) {
 
 }
 
+create_packing_plot <- function(
+  data, selected_value, type_variable, affectation_variable = NULL, new_episodes = NULL, year_sel = NULL
+) {
+
+  # preparing data
+  # raw
+  raw_data <- data %>%
+    dplyr::filter(year == as.numeric(year_sel))
+  # affectation_variable name
+  var_sel <- glue::glue("{affectation_variable}_{new_episodes}")
+  # packcircles layout and data
+  packing_data <- packcircles::circleProgressiveLayout(raw_data[[var_sel]], sizetype = 'area')
+  packing_plot_data <- packcircles::circleLayoutVertices(packing_data, npoints = 100) %>%
+    dplyr::mutate(fill_val = raw_data[[var_sel]][id])
+  packing_plot_data_selected <- packing_plot_data %>%
+    dplyr::filter(raw_data[[type_variable]][id] == selected_value)
+  packing_plot_data_unselected <- packing_plot_data %>%
+    dplyr::filter(raw_data[[type_variable]][id] != selected_value)
+  packing_text_data <- cbind(raw_data, packing_data) %>%
+    dplyr::filter(radius/max(radius, na.rm = TRUE) > 0.20 | !!rlang::sym(type_variable) == selected_value)
+
+  # plot
+  ggplot() +
+    geom_polygon(
+      aes(x, y, group = id, fill = fill_val),
+      colour = 'black', alpha = 0.6, show.legend = FALSE,
+      data = packing_plot_data_unselected
+    ) +
+    geom_polygon(
+      aes(x, y, group = id, fill = fill_val),
+      colour = 'red', alpha = 0.6, show.legend = FALSE, size = 1,
+      data = packing_plot_data_selected
+    ) +
+    geom_text(
+      aes(x, y, label = !! rlang::sym(type_variable)),
+      data = packing_text_data, colour = '#E8EAEB'
+    ) +
+    # coord_equal() +
+    scale_fill_gradientn(colours = deboscat_palette(3, 'light')) +
+    # scale_x_continuous(expand = expansion(mult = 1) ) +
+    theme_void() +
+    theme(plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'))
+}
+
 
 # episode_explorer_plot_helper <- function(episode_data) {
 #   plot_list <- list(

@@ -65,56 +65,14 @@ mod_yearExplorerInfo <- function(
 
   # packing plot
   output$yearExplorerInfo_packing_plot <- shiny::renderPlot({
-
-    # data
-    county_map_data <- shiny::req(year_explorer_data_reactives$county_map_data)
-
-    # inputs
-    county_clicked <- shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id)
-    input_var_sel <- shiny::req(year_explorer_data_reactives$var_sel)
-    new_episodes_sel <- shiny::req(year_explorer_data_reactives$new_episodes_sel)
-    var_sel <- glue::glue("{input_var_sel}_{new_episodes_sel}")
-
-    # packcircles layout and data
-    packing_data <- packcircles::circleProgressiveLayout(county_map_data[[var_sel]], sizetype = 'area')
-    packing_plot_data <- packcircles::circleLayoutVertices(packing_data, npoints = 100) %>%
-      dplyr::mutate(fill_val = county_map_data[[var_sel]][id])
-    packing_plot_data_selected <- packing_plot_data %>%
-      dplyr::filter(county_map_data[['county_name']][id] == county_clicked)
-    packing_plot_data_unselected <- packing_plot_data %>%
-      dplyr::filter(county_map_data[['county_name']][id] != county_clicked)
-    text_data <- cbind(county_map_data, packing_data) %>%
-      dplyr::filter(radius/max(radius, na.rm = TRUE) > 0.20 | county_name == county_clicked)
-
-    # plot
-    ggplot() +
-      geom_polygon(
-        aes(
-          x, y, group = id, fill = fill_val
-          # tooltip = glue::glue("{text_data[['county_name']][id]}: {fill_val} ha"),
-          # data_id = id
-        ),
-        colour = 'black', alpha = 0.6, show.legend = FALSE,
-        data = packing_plot_data_unselected
-      ) +
-      geom_polygon(
-        aes(
-          x, y, group = id, fill = fill_val
-          # tooltip = glue::glue("{text_data[['county_name']][id]}: {fill_val} ha"),
-          # data_id = id
-        ),
-        colour = 'red', alpha = 0.6, show.legend = FALSE, size = 1,
-        data = packing_plot_data_selected
-      ) +
-      geom_text(
-        aes(x, y, label = county_name),
-        data = text_data, colour = '#E8EAEB'
-      ) +
-      # coord_equal() +
-      scale_fill_gradientn(colours = deboscat_palette(3, 'dark')) +
-      # scale_x_continuous(expand = expansion(mult = 1) ) +
-      theme_void() +
-      theme(plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'))
+    create_packing_plot(
+      data = shiny::req(year_explorer_data_reactives$county_map_data),
+      selected_value = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id),
+      type_variable = 'county_name',
+      affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
+      new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),
+      year = shiny::req(year_explorer_data_reactives$year_sel)
+    )
   })
 
   output$yearExplorerInfo_ts_plot <- shiny::renderPlot({

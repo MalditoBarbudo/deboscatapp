@@ -49,7 +49,7 @@ mod_episodeExplorerPlot <- function(
         value = 'episode_explorer_plot_tab',
         shiny::tagList(
           shiny::fluidRow(
-            shiny::h4(translate_app('affectation_general_info')),
+            shiny::h4(translate_app('affectation_general_info', lang())),
             shiny::column(
               width = 4,
               gt::gt_output(ns('epiexp_general_info'))
