@@ -68,7 +68,7 @@ mod_yearExplorerInfo <- function(
     create_packing_plot(
       data = shiny::req(year_explorer_data_reactives$county_map_data),
       selected_value = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id),
-      type_variable = 'county_name',
+      type_variable = county_name,
       affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
       new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),
       year = shiny::req(year_explorer_data_reactives$year_sel)
@@ -85,53 +85,12 @@ mod_yearExplorerInfo <- function(
         dplyr::filter(species_id %in% shiny::req(year_explorer_data_reactives$species_sel))
     }
 
-    # inputs
-    county_clicked <- shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id)
-    input_var_sel <- shiny::req(year_explorer_data_reactives$var_sel)
-    new_episodes_sel <- shiny::req(year_explorer_data_reactives$new_episodes_sel)
-    var_sel <- rlang::expr(!!rlang::sym(glue::glue("{input_var_sel}_{new_episodes_sel}")))
-
-    yearly_report_data_selected <- yearly_report_data %>%
-      dplyr::filter(county_name == county_clicked)
-    yearly_report_data_unselected <- yearly_report_data %>%
-      dplyr::filter(county_name != county_clicked)
-
-    ggplot() +
-      geom_line(
-        aes(x = year, y = !!var_sel, colour = county_name), alpha = 0.2,
-        data = yearly_report_data_unselected,
-        show.legend = FALSE
-      ) +
-      geom_point(
-        aes(x = year, y = !!var_sel, colour = county_name), alpha = 0.2,
-        data = yearly_report_data_unselected,
-        show.legend = FALSE
-      ) +
-      scale_colour_manual(palette = deboscat_palette) +
-      geom_line(
-        aes(x = year, y = !!var_sel), colour = deboscat_palette(1, 'light'), size = 1,
-        data = yearly_report_data_selected,
-        show.legend = FALSE
-      ) +
-      geom_point(
-        aes(x = year, y = !!var_sel), colour = deboscat_palette(1, 'light'), size = 4,
-        data = yearly_report_data_selected,
-        show.legend = FALSE
-      ) +
-      theme_minimal() +
-      theme(
-        plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
-        panel.grid.minor = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.major.y = element_line(color = '#E8EAEB'),
-        axis.text = element_text(colour = '#E8EAEB', size = 14),
-        axis.title = element_text(colour = '#E8EAEB', size = 14),
-        strip.background = element_rect(fill = '#1C1C20', colour = '#E8EAEB'),
-        strip.text = element_text(colour = '#E8EAEB', size = 14),
-        legend.position = 'bottom',
-        legend.text = element_text(colour = '#E8EAEB', size = 14),
-        legend.title = element_blank()
-      )
-
+    create_info_ts_plot(
+      data = yearly_report_data,
+      selected_value = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id),
+      type_variable = county_name,
+      affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
+      new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel)
+    )
   })
 }

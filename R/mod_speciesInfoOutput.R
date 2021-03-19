@@ -67,7 +67,7 @@ mod_speciesInfo <- function(
     create_packing_plot(
       data = deboscat_species_year_affectation_table,
       selected_value = shiny::req(year_explorer_data_reactives$species_sel),
-      type_variable = 'species_id',
+      type_variable = species_id,
       affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
       new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),
       year = shiny::req(year_explorer_data_reactives$year_sel)
@@ -75,62 +75,12 @@ mod_speciesInfo <- function(
   })
 
   output$speciesInfo_ts_plot <- shiny::renderPlot({
-    # data
-    # deboscat_species_year_affectation_table
-
-    # if (year_explorer_data_reactives$species_breakdown) {
-    #   deboscat_species_year_affectation_table <-
-    #     deboscat_species_year_affectation_table %>%
-    #     dplyr::filter(species_id %in% shiny::req(year_explorer_data_reactives$species_sel))
-    # }
-
-    # inputs
-    species_sel <- shiny::req(year_explorer_data_reactives$species_sel)
-    input_var_sel <- shiny::req(year_explorer_data_reactives$var_sel)
-    new_episodes_sel <- shiny::req(year_explorer_data_reactives$new_episodes_sel)
-    var_sel <- rlang::expr(!!rlang::sym(glue::glue("{input_var_sel}_{new_episodes_sel}")))
-
-    deboscat_species_year_affectation_table_selected <- deboscat_species_year_affectation_table %>%
-      dplyr::filter(species_id == species_sel)
-    deboscat_species_year_affectation_table_unselected <- deboscat_species_year_affectation_table %>%
-      dplyr::filter(species_id != species_sel)
-
-    ggplot() +
-      geom_line(
-        aes(x = year, y = !!var_sel, colour = species_id), alpha = 0.2,
-        data = deboscat_species_year_affectation_table_unselected,
-        show.legend = FALSE
-      ) +
-      geom_point(
-        aes(x = year, y = !!var_sel, colour = species_id), alpha = 0.2,
-        data = deboscat_species_year_affectation_table_unselected,
-        show.legend = FALSE
-      ) +
-      scale_colour_manual(palette = deboscat_palette) +
-      geom_line(
-        aes(x = year, y = !!var_sel), colour = deboscat_palette(1, 'light'), size = 1,
-        data = deboscat_species_year_affectation_table_selected,
-        show.legend = FALSE
-      ) +
-      geom_point(
-        aes(x = year, y = !!var_sel), colour = deboscat_palette(1, 'light'), size = 4,
-        data = deboscat_species_year_affectation_table_selected,
-        show.legend = FALSE
-      ) +
-      theme_minimal() +
-      theme(
-        plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
-        panel.grid.minor = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.major.y = element_line(color = '#E8EAEB'),
-        axis.text = element_text(colour = '#E8EAEB', size = 14),
-        axis.title = element_text(colour = '#E8EAEB', size = 14),
-        strip.background = element_rect(fill = '#1C1C20', colour = '#E8EAEB'),
-        strip.text = element_text(colour = '#E8EAEB', size = 14),
-        legend.position = 'bottom',
-        legend.text = element_text(colour = '#E8EAEB', size = 14),
-        legend.title = element_blank()
-      )
-
+    create_info_ts_plot(
+      data = deboscat_species_year_affectation_table,
+      selected_value = shiny::req(year_explorer_data_reactives$species_sel),
+      type_variable = species_id,
+      affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
+      new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel)
+    )
   })
 }
