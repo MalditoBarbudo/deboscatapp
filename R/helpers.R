@@ -94,7 +94,8 @@ create_spatial_plot <- function(episodes_data) {
 }
 
 create_packing_plot <- function(
-  data, selected_value, type_variable, affectation_variable = NULL, new_episodes = NULL, year_sel = NULL
+  data, selected_value, type_variable, affectation_variable = NULL,
+  new_episodes = NULL, year_sel = NULL, lang = NULL
 ) {
 
   # preparing data
@@ -116,6 +117,15 @@ create_packing_plot <- function(
   packing_text_data <- cbind(raw_data, packing_data) %>%
     dplyr::filter(radius/max(radius, na.rm = TRUE) > 0.20 | !!type_variable == selected_value)
 
+  # title
+  # title should be:
+  # "{var_sel} of {selected_value} for {year_sel} compared to other {type_vriable}", but var_sel and
+  # type_variable must be translated before
+  var_sel_translated <- translate_app(var_sel, lang())
+  type_variable_translated <- translate_app(rlang::as_name(type_variable), lang())
+  packing_plot_title <- glue::glue(translate_app(glue::glue("packing_plot_title"), lang()))
+  packing_plot_subtitle <- glue::glue(translate_app(glue::glue("packing_plot_subtitle"), lang()))
+
   # plot
   ggplot() +
     geom_polygon(
@@ -134,11 +144,16 @@ create_packing_plot <- function(
     ) +
     scale_fill_gradientn(colours = deboscat_palette(3, 'light')) +
     theme_void() +
-    theme(plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'))
+    labs(title = packing_plot_title, subtitle = packing_plot_subtitle) +
+    theme(
+      plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
+      plot.title = element_text(colour = '#E8EAEB', size = 12),
+      plot.subtitle = element_text(colour = '#E8EAEB', size = 11)
+    )
 }
 
 create_info_ts_plot <- function(
-  data, selected_value, type_variable, affectation_variable = NULL, new_episodes = NULL
+  data, selected_value, type_variable, affectation_variable = NULL, new_episodes = NULL, lang = NULL
 ) {
 
   ## data preparations
@@ -154,6 +169,12 @@ create_info_ts_plot <- function(
     dplyr::filter(!!type_variable == selected_value)
   data_unselected <- data %>%
     dplyr::filter(!!type_variable != selected_value)
+
+  # title
+  var_sel_translated <- translate_app(rlang::as_name(var_sel), lang())
+  type_variable_translated <- translate_app(rlang::as_name(type_variable), lang())
+  ts_plot_title <- glue::glue(translate_app(glue::glue("ts_plot_title"), lang()))
+  ts_plot_subtitle <- glue::glue(translate_app(glue::glue("packing_plot_subtitle"), lang())) # yep, is the same as packing plot
 
   # plot
   ggplot() +
@@ -179,8 +200,11 @@ create_info_ts_plot <- function(
       show.legend = FALSE
     ) +
     theme_minimal() +
+    labs(title = ts_plot_title, subtitle = ts_plot_subtitle) +
     theme(
       plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
+      plot.title = element_text(colour = '#E8EAEB', size = 12),
+      plot.subtitle = element_text(colour = '#E8EAEB', size = 11),
       panel.grid.minor = element_blank(),
       panel.grid.major.x = element_blank(),
       panel.grid.major.y = element_line(color = '#E8EAEB'),

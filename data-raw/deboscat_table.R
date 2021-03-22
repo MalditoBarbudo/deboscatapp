@@ -66,10 +66,39 @@ app_translations <- tibble::tribble(
   "map", "Mapa", "Map", "Mapa",
   "table", "Taula", "Table", "Tabla",
 
+  # info tabs
+  "packing_plot_title", "{var_sel_translated} de {selected_value} per {year_sel}", "{var_sel_translated} of {selected_value} for {year_sel}", "{var_sel_translated} de {selected_value} para {year_sel}",
+  "packing_plot_subtitle", "comparat amb altres {type_variable_translated}", "compared to other {type_variable_translated}", "comparado con otras {type_variable_translated}",
+  "ts_plot_title", "{var_sel_translated} de {selected_value} al llarg dels anys", "{var_sel_translated} temporal trend for {selected_value}", "{var_sel_translated} de {selected_value} a largo de los años",
+
   # tabs translations
   "episode_report_tab_translation", "Explorador d'episodis", "Episode explorer", "Explorador de episodios",
   "year_report_tab_translation", "Explorador de comarques", "Counties explorer", "Explorador de comarcas",
   "tech_specs_translation", "Especificacions tècniques", "Technical specifications", "Especificaciones técnicas",
+
+  # variables
+  "total_episodes_area_all", "Àrea total dels episodis [ha]", "Total area of the episodes [ha]", "Área total de los episodios [ha]",
+  "total_trees_area_all", "Àrea total de coberta dels arbres [ha]", "Total tree cover area [ha]", "Área total de cubierta de los árboles [ha]",
+  "affected_area_all", "Àrea total afectada [ha]", "Total area affected [ha]", "Àrea total afectada [ha]",
+  "decolorated_area_all", "Àrea total amb decoloració [ha]", "Total area decolorated [ha]", "Área total con decoloración [ha]",
+  "defoliated_area_all", "Àrea total amb defoliació [ha]", "Total area defoliated [ha]", "Área total con defoliación [ha]",
+  "dead_area_all", "Àrea total amb moratalitat [ha]", "Total area dead [ha]", "Área total con mortalidad [ha]",
+  "total_episodes_area_old", "Àrea total dels episodis [ha] (episodis antics)", "Total area of the episodes [ha] (old episodes)", "Área total de los episodios [ha] (episodios viejos)",
+  "total_trees_area_old", "Àrea total de coberta dels arbres [ha] (episodis antics)", "Total tree cover area [ha] (old episodes)", "Área total de cubierta de los árboles [ha] (episodios viejos)",
+  "affected_area_old", "Àrea total afectada [ha] (episodis antics)", "Total area affected [ha] (old episodes)", "Àrea total afectada [ha] (episodios viejos)",
+  "decolorated_area_old", "Àrea total amb decoloració [ha] (episodis antics)", "Total area decolorated [ha] (old episodes)", "Área total con decoloración [ha] (episodios viejos)",
+  "defoliated_area_old", "Àrea total amb defoliació [ha] (episodis antics)", "Total area defoliated [ha] (old episodes)", "Área total con defoliación [ha] (episodios viejos)",
+  "dead_area_old", "Àrea total amb moratalitat [ha] (episodis antics)", "Total area dead [ha] (old episodes)", "Área total con mortalidad [ha] (episodios viejos)",
+  "total_episodes_area_new", "Àrea total dels episodis [ha] (episodis nous)", "Total area of the episodes [ha] (new episodes)", "Área total de los episodios [ha] (episodios nuevos)",
+  "total_trees_area_new", "Àrea total de coberta dels arbres [ha] (episodis nous)", "Total tree cover area [ha] (new episodes)", "Área total de cubierta de los árboles [ha] (episodios nuevos)",
+  "affected_area_new", "Àrea total afectada [ha] (episodis nous)", "Total area affected [ha] (new episodes)", "Àrea total afectada [ha] (episodios nuevos)",
+  "decolorated_area_new", "Àrea total amb decoloració [ha] (episodis nous)", "Total area decolorated [ha] (new episodes)", "Área total con decoloración [ha] (episodios nuevos)",
+  "defoliated_area_new", "Àrea total amb defoliació [ha] (episodis nous)", "Total area defoliated [ha] (new episodes)", "Área total con defoliación [ha] (episodios nuevos)",
+  "dead_area_new", "Àrea total amb moratalitat [ha] (episodis nous)", "Total area dead [ha] (new episodes)", "Área total con mortalidad [ha] (episodios nuevos)",
+
+  "species_id", "especiès", "species", "especies",
+  "county_name", "comarques", "counties", "comarcas",
+
 
 
 

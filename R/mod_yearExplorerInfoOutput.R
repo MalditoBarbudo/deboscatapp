@@ -71,7 +71,8 @@ mod_yearExplorerInfo <- function(
       type_variable = county_name,
       affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
       new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),
-      year = shiny::req(year_explorer_data_reactives$year_sel)
+      year = shiny::req(year_explorer_data_reactives$year_sel),
+      lang = lang
     )
   })
 
@@ -90,7 +91,8 @@ mod_yearExplorerInfo <- function(
       selected_value = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id),
       type_variable = county_name,
       affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
-      new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel)
+      new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),
+      lang = lang
     )
   })
 }

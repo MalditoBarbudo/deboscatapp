@@ -70,7 +70,8 @@ mod_speciesInfo <- function(
       type_variable = species_id,
       affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
       new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),
-      year = shiny::req(year_explorer_data_reactives$year_sel)
+      year = shiny::req(year_explorer_data_reactives$year_sel),
+      lang = lang
     )
   })
 
@@ -80,7 +81,8 @@ mod_speciesInfo <- function(
       selected_value = shiny::req(year_explorer_data_reactives$species_sel),
       type_variable = species_id,
       affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
-      new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel)
+      new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),
+      lang = lang
     )
   })
 }
