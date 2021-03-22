@@ -186,13 +186,23 @@ $(document).on('shiny:disconnected', function(event) {
       episode_explorer_data_reactives
     )
     shiny::callModule(
-      mod_yearExplorerInfo, 'mod_yearExplorerInfoOutput', lang,
-      year_explorer_data_reactives, year_explorer_output_reactives
+      mod_info, 'mod_infoOutput_species', lang,
+      year_explorer_data_reactives, year_explorer_output_reactives,
+      'species_id'
     )
     shiny::callModule(
-      mod_speciesInfo, 'mod_speciesInfoOutput', lang,
-      year_explorer_data_reactives, year_explorer_output_reactives
+      mod_info, 'mod_infoOutput_counties', lang,
+      year_explorer_data_reactives, year_explorer_output_reactives,
+      'county_name'
     )
+    # shiny::callModule(
+    #   mod_yearExplorerInfo, 'mod_yearExplorerInfoOutput', lang,
+    #   year_explorer_data_reactives, year_explorer_output_reactives
+    # )
+    # shiny::callModule(
+    #   mod_speciesInfo, 'mod_speciesInfoOutput', lang,
+    #   year_explorer_data_reactives, year_explorer_output_reactives
+    # )
     shiny::callModule(
       mod_saveData, 'mod_saveData_year_explorer', lang,
       year_explorer_data_reactives, data_type = 'year_explorer'

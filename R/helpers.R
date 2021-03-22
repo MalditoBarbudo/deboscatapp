@@ -200,7 +200,7 @@ create_info_ts_plot <- function(
       show.legend = FALSE
     ) +
     theme_minimal() +
-    labs(title = ts_plot_title, subtitle = ts_plot_subtitle) +
+    labs(title = ts_plot_title, subtitle = ts_plot_subtitle, y = NULL, x = NULL) +
     theme(
       plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
       plot.title = element_text(colour = '#E8EAEB', size = 12),

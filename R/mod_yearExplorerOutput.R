@@ -141,7 +141,7 @@ mod_yearExplorer <- function(
       if (click_info$group == 'counties') {
         shiny::showModal(
           shiny::modalDialog(
-            mod_yearExplorerInfoOutput('mod_yearExplorerInfoOutput'),
+            mod_infoOutput('mod_infoOutput_counties'),
             footer = shiny::modalButton(
               translate_app('dismiss', lang())
             ),

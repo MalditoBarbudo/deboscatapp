@@ -67,9 +67,11 @@ app_translations <- tibble::tribble(
   "table", "Taula", "Table", "Tabla",
 
   # info tabs
+  "mod_info_title", "{selected_value} a {year_sel}", "{selected_value} in {year_sel}", "{selected_value} en {year_sel}",
   "packing_plot_title", "{var_sel_translated} de {selected_value} per {year_sel}", "{var_sel_translated} of {selected_value} for {year_sel}", "{var_sel_translated} de {selected_value} para {year_sel}",
   "packing_plot_subtitle", "comparat amb altres {type_variable_translated}", "compared to other {type_variable_translated}", "comparado con otras {type_variable_translated}",
   "ts_plot_title", "{var_sel_translated} de {selected_value} al llarg dels anys", "{var_sel_translated} temporal trend for {selected_value}", "{var_sel_translated} de {selected_value} a largo de los años",
+  "dismiss", "Tancar", "Dismiss", "Cerrar",
 
   # tabs translations
   "episode_report_tab_translation", "Explorador d'episodis", "Episode explorer", "Explorador de episodios",

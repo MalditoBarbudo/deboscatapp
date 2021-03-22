@@ -347,7 +347,7 @@ mod_yearExplorerData <- function(
     handlerExpr = {
       shiny::showModal(
         shiny::modalDialog(
-          mod_speciesInfoOutput('mod_speciesInfoOutput'),
+          mod_infoOutput('mod_infoOutput_species'),
           footer = shiny::modalButton(
             translate_app('dismiss', lang())
           ),
