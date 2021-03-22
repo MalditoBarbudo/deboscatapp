@@ -48,7 +48,7 @@ mod_saveData <- function(
       rlang::set_names(~ translate_app(.x, lang()))
 
     if (data_type == 'episode_explorer') {
-      save_all_label <- translate_app('save_all_label_episodes')
+      save_all_label <- translate_app('save_all_label_episodes', lang())
       save_all_choices <- c(all_episodes = 'all', selected_episodes = 'selected') %>%
         rlang::set_names(~ translate_app(.x, lang()))
     }
@@ -77,7 +77,7 @@ mod_saveData <- function(
           shiny::br(),
           shiny::downloadButton(
             ns('save_btn'),
-            label = translate_app('save_btn', lang())
+            label = translate_app('save', lang())
           )
         )
       )

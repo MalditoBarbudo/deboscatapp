@@ -44,6 +44,11 @@ mod_info <- function(
       'species_id' = shiny::req(year_explorer_data_reactives$species_sel),
       'county_name' = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id)
     )
+    species_sel <- ""
+    if (year_explorer_data_reactives$species_breakdown & trigger == 'county_name') {
+      species_sel <- glue::glue(" ({shiny::req(year_explorer_data_reactives$species_sel)})")
+    }
+
     glue::glue(translate_app('mod_info_title', lang()))
   })
 

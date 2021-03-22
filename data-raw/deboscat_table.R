@@ -60,18 +60,20 @@ app_translations <- tibble::tribble(
   "affected_area", "Àrea total afectada [ha]", "Total area affected [ha]", "Àrea total afectada [ha]",
   "decolorated_area", "Àrea total amb decoloració [ha]", "Total area decolorated", "Área total con decoloración [ha]",
   "defoliated_area", "Àrea total amb defoliació [ha]", "Total area defoliated", "Área total con defoliación [ha]",
-  "dead_area", "Àrea total amb moratalitat [ha]", "Total area dead", "Área total con mortalidad [ha]",
+  "dead_area", "Àrea total amb mortalitat [ha]", "Total area dead", "Área total con mortalidad [ha]",
   "year_explorer_species_sel", "Espècie", "Species", "Especie:",
   "show_species_info", "Espècies info", "Species info", "Especies info",
   "map", "Mapa", "Map", "Mapa",
   "table", "Taula", "Table", "Tabla",
 
   # info tabs
-  "mod_info_title", "{selected_value} a {year_sel}", "{selected_value} in {year_sel}", "{selected_value} en {year_sel}",
+  "mod_info_title", "{selected_value} a {year_sel}{species_sel}", "{selected_value} in {year_sel}{species_sel}", "{selected_value} en {year_sel}{species_sel}",
   "packing_plot_title", "{var_sel_translated} de {selected_value} per {year_sel}", "{var_sel_translated} of {selected_value} for {year_sel}", "{var_sel_translated} de {selected_value} para {year_sel}",
   "packing_plot_subtitle", "comparat amb altres {type_variable_translated}", "compared to other {type_variable_translated}", "comparado con otras {type_variable_translated}",
   "ts_plot_title", "{var_sel_translated} de {selected_value} al llarg dels anys", "{var_sel_translated} temporal trend for {selected_value}", "{var_sel_translated} de {selected_value} a largo de los años",
   "dismiss", "Tancar", "Dismiss", "Cerrar",
+  "species_id_plot_title", "especiès", "species", "especies",
+  "county_name_plot_title", "comarques", "counties", "comarcas",
 
   # tabs translations
   "episode_report_tab_translation", "Explorador d'episodis", "Episode explorer", "Explorador de episodios",
@@ -84,22 +86,39 @@ app_translations <- tibble::tribble(
   "affected_area_all", "Àrea total afectada [ha]", "Total area affected [ha]", "Àrea total afectada [ha]",
   "decolorated_area_all", "Àrea total amb decoloració [ha]", "Total area decolorated [ha]", "Área total con decoloración [ha]",
   "defoliated_area_all", "Àrea total amb defoliació [ha]", "Total area defoliated [ha]", "Área total con defoliación [ha]",
-  "dead_area_all", "Àrea total amb moratalitat [ha]", "Total area dead [ha]", "Área total con mortalidad [ha]",
+  "dead_area_all", "Àrea total amb mortalitat [ha]", "Total area dead [ha]", "Área total con mortalidad [ha]",
   "total_episodes_area_old", "Àrea total dels episodis [ha] (episodis antics)", "Total area of the episodes [ha] (old episodes)", "Área total de los episodios [ha] (episodios viejos)",
   "total_trees_area_old", "Àrea total de coberta dels arbres [ha] (episodis antics)", "Total tree cover area [ha] (old episodes)", "Área total de cubierta de los árboles [ha] (episodios viejos)",
   "affected_area_old", "Àrea total afectada [ha] (episodis antics)", "Total area affected [ha] (old episodes)", "Àrea total afectada [ha] (episodios viejos)",
   "decolorated_area_old", "Àrea total amb decoloració [ha] (episodis antics)", "Total area decolorated [ha] (old episodes)", "Área total con decoloración [ha] (episodios viejos)",
   "defoliated_area_old", "Àrea total amb defoliació [ha] (episodis antics)", "Total area defoliated [ha] (old episodes)", "Área total con defoliación [ha] (episodios viejos)",
-  "dead_area_old", "Àrea total amb moratalitat [ha] (episodis antics)", "Total area dead [ha] (old episodes)", "Área total con mortalidad [ha] (episodios viejos)",
+  "dead_area_old", "Àrea total amb mortalitat [ha] (episodis antics)", "Total area dead [ha] (old episodes)", "Área total con mortalidad [ha] (episodios viejos)",
   "total_episodes_area_new", "Àrea total dels episodis [ha] (episodis nous)", "Total area of the episodes [ha] (new episodes)", "Área total de los episodios [ha] (episodios nuevos)",
   "total_trees_area_new", "Àrea total de coberta dels arbres [ha] (episodis nous)", "Total tree cover area [ha] (new episodes)", "Área total de cubierta de los árboles [ha] (episodios nuevos)",
   "affected_area_new", "Àrea total afectada [ha] (episodis nous)", "Total area affected [ha] (new episodes)", "Àrea total afectada [ha] (episodios nuevos)",
   "decolorated_area_new", "Àrea total amb decoloració [ha] (episodis nous)", "Total area decolorated [ha] (new episodes)", "Área total con decoloración [ha] (episodios nuevos)",
   "defoliated_area_new", "Àrea total amb defoliació [ha] (episodis nous)", "Total area defoliated [ha] (new episodes)", "Área total con defoliación [ha] (episodios nuevos)",
-  "dead_area_new", "Àrea total amb moratalitat [ha] (episodis nous)", "Total area dead [ha] (new episodes)", "Área total con mortalidad [ha] (episodios nuevos)",
+  "dead_area_new", "Àrea total amb mortalitat [ha] (episodis nous)", "Total area dead [ha] (new episodes)", "Área total con mortalidad [ha] (episodios nuevos)",
+  "year", "Any", "Year", "Año",
+  "county_name", "Comarca", "county", "Comarca",
+  "species_id", "Espècie", "Species", "Especie",
+  "episode_id", "ID de episodi", "Episode ID", "ID de episodio",
+  "county_id", "ID de comarca", "County ID", "ID de comarca",
+  "cover_perc", "Cuberta [%]", "Cover [%]", "Cobertura [%]",
+  "affected_trees_perc", "Arbres afectats [%]", "Affected trees [%]", "Árboles afectados [%]",
+  "mortality_perc", "Mortalitat [%]", "Mortality [%]", "Mortalidad [%]",
+  "defoliation_perc", "Defolicació [%]", "Defolitation [%]", "Defoliación [%]",
+  "decoloration_perc", "Decoloració [%]", "Decoloration [%]", "Decoloración [%]",
+  "episode_area", "Área del episodi [ha]", "Episode area [ha]", "Área del episodio [ha]",
+  "new_episode", "Episodi nou", "New episode", "Episodio nuevo",
+  "affected_trees_distribution", "Distribució arbres afectats", "Affected trees distribution", "Distribución árboles afectados",
+  "cicatrization_index", "Afectació genreal del episodi [%]", "General episode affectation [%]", "Afectación general del episodio [%]",
 
-  "species_id", "especiès", "species", "especies",
-  "county_name", "comarques", "counties", "comarcas",
+
+
+
+  # map
+  'Relief', 'Relleu (base)', 'Relief (base)', 'Relieve (base)',
 
 
 
@@ -118,9 +137,15 @@ app_translations <- tibble::tribble(
 
   # save
   "save", "Guardar", "Save", "Guardar",
-  ".csv", "Text (csv)", "Text (csv)", "Texto (csv)",
-  ".xlsx", "MS Excel (xlsx)", "MS Excel (xlsx)", "MS Excel (xlsx)",
-  ".gpkg", "GeoPackage (gpkg)", "GeoPackage (gpkg)", "GeoPackage (gpkg)"
+  "save_spatial_label", "Escull el format:", "Choose the format:", "Elije el formato:",
+  "csv", "Text (csv)", "Text (csv)", "Texto (csv)",
+  "spatial", "GeoPackage (gpkg)", "GeoPackage (gpkg)", "GeoPackage (gpkg)",
+  "save_all_label_counties", "Dades a guardar:", "Episode data to save:", "Datos a guardar:",
+  "save_all_label_episodes", "Dades a guardar:", "Episode data to save:", "Datos a guardar:",
+  "all_years", "Tots els anys", "All years", "Todos los años",
+  "selected_years", "Any seleccionat", "Selected year", "Año seleccionado",
+  "selected_episodes", "Episodi seleccionat", "Selected episode", "Episodio seleccionado",
+
 )
 
 ## deboscat per species ####

@@ -122,7 +122,7 @@ create_packing_plot <- function(
   # "{var_sel} of {selected_value} for {year_sel} compared to other {type_vriable}", but var_sel and
   # type_variable must be translated before
   var_sel_translated <- translate_app(var_sel, lang())
-  type_variable_translated <- translate_app(rlang::as_name(type_variable), lang())
+  type_variable_translated <- translate_app(glue::glue("{rlang::as_name(type_variable)}_plot_title"), lang())
   packing_plot_title <- glue::glue(translate_app(glue::glue("packing_plot_title"), lang()))
   packing_plot_subtitle <- glue::glue(translate_app(glue::glue("packing_plot_subtitle"), lang()))
 
@@ -172,7 +172,7 @@ create_info_ts_plot <- function(
 
   # title
   var_sel_translated <- translate_app(rlang::as_name(var_sel), lang())
-  type_variable_translated <- translate_app(rlang::as_name(type_variable), lang())
+  type_variable_translated <- translate_app(glue::glue("{rlang::as_name(type_variable)}_plot_title"), lang())
   ts_plot_title <- glue::glue(translate_app(glue::glue("ts_plot_title"), lang()))
   ts_plot_subtitle <- glue::glue(translate_app(glue::glue("packing_plot_subtitle"), lang())) # yep, is the same as packing plot
 
