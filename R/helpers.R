@@ -11,12 +11,20 @@ navbarPageWithInputs <- function(..., inputs) {
   navbar
 }
 
-create_affectation_plot <- function(episodes_data) {
-  episodes_data %>%
+create_affectation_plot <- function(episodes_data, lang) {
+  plot_data <-
+    episodes_data %>%
     dplyr::select(-cover_perc) %>%
     tidyr::pivot_longer(
       dplyr::ends_with('perc'), names_to = "affectation", values_to = 'perc'
-    ) %>%
+    )
+
+  legend_labels <- plot_data[['affectation']] %>%
+    unique() %>%
+    sort() %>%
+    translate_app(lang())
+
+  plot_data %>%
     ggplot(aes(x = year, y = perc, fill = affectation, colour = affectation)) +
     geom_col(data = ~ dplyr::filter(.x, affectation != 'affected_trees_perc'), width = 0.4) +
     geom_line(data = ~ dplyr::filter(.x, affectation == 'affected_trees_perc'), size = 1) +
@@ -25,8 +33,9 @@ create_affectation_plot <- function(episodes_data) {
     scale_x_continuous(breaks = unique(episodes_data$year), labels = unique(episodes_data$year)) +
     scale_y_continuous(limits = c(0,100)) +
     theme(legend.position = 'bottom') +
-    scale_fill_manual(values = deboscat_palette(4, 'light')) +
-    scale_colour_manual(values = deboscat_palette(4, 'light')) +
+    scale_fill_manual(values = deboscat_palette(4, 'light'), labels = legend_labels) +
+    scale_colour_manual(values = deboscat_palette(4, 'light'), labels = legend_labels) +
+    labs(x = '', y = '') +
     theme_minimal() +
     theme(
       plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
@@ -37,13 +46,13 @@ create_affectation_plot <- function(episodes_data) {
       axis.title = element_text(colour = '#E8EAEB', size = 14),
       strip.background = element_rect(fill = '#1C1C20', colour = '#E8EAEB'),
       strip.text = element_text(colour = '#E8EAEB', size = 14),
-      legend.position = 'bottom',
+      legend.position = 'top',
       legend.text = element_text(colour = '#E8EAEB', size = 14),
       legend.title = element_blank()
     )
 }
 
-create_affectation_trend_plot <- function(episodes_data) {
+create_affectation_trend_plot <- function(episodes_data, lang) {
   episodes_data %>%
     ggplot(aes(x = year, y = cicatrization_index)) +
     geom_line(colour = deboscat_palette(3)[1], size = 1) +
@@ -51,9 +60,11 @@ create_affectation_trend_plot <- function(episodes_data) {
     scale_x_continuous(breaks = unique(episodes_data$year), labels = unique(episodes_data$year)) +
     facet_grid(rows = dplyr::vars(episode_id)) +
     scale_y_continuous(limits = c(0,100)) +
+    labs(x = '', y = '', title = translate_app('cicatrization_index', lang())) +
     theme_minimal() +
     theme(
       plot.background = element_rect(fill = '#1C1C20', colour = '#1C1C20'),
+      plot.title = element_text(colour = '#E8EAEB', size = 14),
       panel.grid.minor = element_blank(),
       panel.grid.major.x = element_blank(),
       panel.grid.major.y = element_line(color = '#E8EAEB'),
@@ -199,6 +210,7 @@ create_info_ts_plot <- function(
       data = data_selected,
       show.legend = FALSE
     ) +
+    scale_x_continuous(breaks = unique(data$year), labels = unique(data$year)) +
     theme_minimal() +
     labs(title = ts_plot_title, subtitle = ts_plot_subtitle, y = NULL, x = NULL) +
     theme(

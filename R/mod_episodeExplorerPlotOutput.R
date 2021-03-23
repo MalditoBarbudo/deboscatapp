@@ -110,12 +110,12 @@ mod_episodeExplorerPlot <- function(
   # plot --------------------------------------------------------------------------------------------------
   output$epiexp_affectation_plot <- shiny::renderPlot({
     shiny::req(episode_explorer_data_reactives$data) %>%
-      create_affectation_plot()
+      create_affectation_plot(lang)
   })
 
   output$epiexp_affectation_trend_plot <- shiny::renderPlot({
     shiny::req(episode_explorer_data_reactives$data) %>%
-      create_affectation_trend_plot()
+      create_affectation_trend_plot(lang)
   })
 
   output$epiexp_spatial_plot <- shiny::renderPlot({
