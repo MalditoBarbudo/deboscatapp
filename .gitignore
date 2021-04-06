@@ -8,4 +8,5 @@ data-raw/*.csv
 data-raw/*.gpkg
 data-raw/*.pptx
 data-raw/.~lock*
+data-raw/*.xlsx
 

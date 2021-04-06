@@ -51,7 +51,6 @@ mod_yearExplorerData <- function(
 
     # taglist
     shiny::tagList(
-      shiny::br(),
       shiny::h4(translate_app('h4_yearexp_episodes_data_sel', lang())),
       shinyWidgets::pickerInput(
         ns('year_explorer_year_sel'),
@@ -89,13 +88,20 @@ mod_yearExplorerData <- function(
           tickIcon = 'glyphicon-tree-deciduous'
         )
       ),
-      shinyWidgets::prettyToggle(
+      shinyWidgets::prettyCheckbox(
         ns('year_explorer_species_breakdown'),
-        label_on = translate_app('year_explorer_species_breakdown_on', lang()),
-        label_off = translate_app('year_explorer_species_breakdown_off', lang()),
+        label = translate_app('year_explorer_species_breakdown_off', lang()),
         value = FALSE,
-        shape = 'round'
+        shape = 'round',
+        status = 'success'
       ),
+      # shinyWidgets::prettyToggle(
+      #   ns('year_explorer_species_breakdown'),
+      #   label_on = translate_app('year_explorer_species_breakdown_on', lang()),
+      #   label_off = translate_app('year_explorer_species_breakdown_off', lang()),
+      #   value = FALSE,
+      #   shape = 'round'
+      # ),
       shinyjs::hidden(
         shiny::div(
           id = ns('species_breakdown_warning'), align = 'center',
@@ -104,6 +110,7 @@ mod_yearExplorerData <- function(
           shiny::p(translate_app('species_breakdown_warning', lang()))
         )
       ),
+      shiny::br(),
       # viz
       shiny::h4(translate_app('h4_yearexp_episodes_viz_sel', lang())),
       shinyWidgets::pickerInput(
