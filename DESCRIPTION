@@ -26,4 +26,7 @@ Imports:
     rlang,
     purrr,
     magrittr,
-    gt
+    gt,
+    waiter,
+    leaflet,
+    DT

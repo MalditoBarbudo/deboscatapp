@@ -50,9 +50,10 @@ tiempo se vuelve a detectar un empeoramiento del estado del episodio, se reabre 
 
 #### Explorador de comarcas
 
-Los datos pueden ser consultados para todos los episodios, episodios nuevos (aquellos que aparecen por primera
-vez en el año seleccionado) y epsodios antiguos (aquellos que ya están presentes en años previos al
-seleccionado). Así mismo, los datos también pueden ser desglosados por especies.
+En el explorador de comarcas, los datos son agregados para cada comarca. Se permite seleccionar los episodios
+con los que hacer la agregación: todos los episodios, episodios nuevos (aquelos que aparecen por primera vez
+en el año seleccionado) y episodios antiguos (aquellos que ya están presentes en años previos al seleccionado).
+Así mismo, los datos pueden ser desglosados por especie.
 
   > Cuando se resume por comarcas, los datos deben ser normalizados con respecto a la cobertura de cada
   especie y calculados con respecto al área original del episodio (ya que algunas especies pueden
@@ -63,25 +64,25 @@ seleccionado). Así mismo, los datos también pueden ser desglosados por especie
 Independientemente del desglose y el tipo de episodios seleccionados, las variables disponibles son las
 siguientes:
 
-1. Número de episodios [recuento]: Episodios registrados para el año seleccionado en cada comarca (y especie,
+1. Número de episodios [recuento]: Episodios registrados para el año seleccionado para cada comarca (y especie,
   si el desglosado está activo).
 
 1. Área total del episodio [ha]: Suma del área total de los episodios delimitados por los Agentes Rurales para
   cada comarca (y especie, si el desglosado está activo).
   
 1. Área total de cubierta de los árboles [ha]: Suma del área total cubierta por las especies afectadas de los
-  episodios en cada comarca (y especie, si el desglosado está activo).
+  episodios para cada comarca (y especie, si el desglosado está activo).
   
-1. Área total afectada [ha]: Suma total del área afectada en los episodios de cada comarca (y especie, si el
+1. Área total afectada [ha]: Suma total del área afectada en los episodios para cada comarca (y especie, si el
   desglosado está activo).
 
-1. Área total decolorada [ha]: Suma total del área decolorada en los episodios de cada comarca (y especie,
+1. Área total decolorada [ha]: Suma total del área decolorada en los episodios para cada comarca (y especie,
   si el desglosado está activo). Solo disonible desde 2014 en adelante.
   
-1. Área total defoliada [ha]: Suma total del área defoliada en los episodios de cada comarca (y especie,
+1. Área total defoliada [ha]: Suma total del área defoliada en los episodios para cada comarca (y especie,
   si el desglosado está activo). Solo disonible desde 2014 en adelante.
   
-1. Área total con mortalidad [ha]: Suma total del área con moratalidad presente en los episodios de cada
+1. Área total con mortalidad [ha]: Suma total del área con moratalidad presente en los episodios para cada
   comarca (y especie, si el desglosado está activo). Solo disonible desde 2014 en adelante.
 
 La siguiente figura muestra una representación visual de las variables, a) sin desglose por especies, b) con

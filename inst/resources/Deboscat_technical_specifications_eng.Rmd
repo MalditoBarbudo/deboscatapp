@@ -46,9 +46,9 @@ are necessary. If after some years the area has a relapse, the record is reopen 
 
 #### Counties explorer
 
-Data can be queried for all episodes, new episodes (episodes that appear for the first time in the selected
-year) and old episodes (episodes that were already present in previous years to the one selected).
-Data can also be broken down by species.
+In the counties explorer, data is aggregated by county, allowing queries for all episodes, new episodes
+(episodes that appear for the first time in the selected year) and old episodes (episodes that were already
+present in previous years to the one selected). Data can also be broken down by species.
 
   > When summarising by counties, data has to be normalized by the cover of each species and calculated
   against the original episode area (as species can share the same episode). This means that

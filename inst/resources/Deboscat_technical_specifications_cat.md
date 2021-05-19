@@ -48,9 +48,10 @@ que pot reaparèixer.
 
 #### Explorador de comarques
 
-Les dades poden ser consultats per tots els episodis, episodis nous (aquells que apareixen per primera
-vegada l'any seleccionat) i epsodios antics (aquells que ja són presents en anys previs a l'
-seleccionat). Així mateix, les dades també poden ser desglossats per espècies.
+En l'explorador de comarques, les dades són agregades per a cada comarca. Es permet seleccionar els episodis
+amb els quals fer l'agregació: tots els episodis, episodis nous (aquelos que apareixen per primera vegada
+en l'any seleccionat) i episodis antics (aquells que ja són presents en anys previs a l'seleccionat).
+Així mateix, les dades poden ser desglossades per espècie.
 
   > Quan es resumeix per comarques, les dades han de ser normalitzats pel que fa a la cobertura de cada
    espècie i calculats pel que fa a l'àrea original de l'episodi (ja que algunes espècies poden
@@ -61,25 +62,25 @@ seleccionat). Així mateix, les dades també poden ser desglossats per espècies
 Independentment del desglossament i el tipus d'episodis seleccionats, les variables disponibles són les
 següents:
 
-1. Nombre d'episodis [recompte]: Episodis registrats per a l'any seleccionat a cada comarca (i espècie,
+1. Nombre d'episodis [recompte]: Episodis registrats per a l'any seleccionat per a cada comarca (i espècie,
   si el desglossat està actiu).
 
 1. Àrea total de l'episodi [ha]: Suma de l'àrea total dels episodis delimitats pels Agents Rurals per
   cada comarca (i espècie, si el desglossat està actiu).
   
-1. Àrea total de coberta dels arbres [ha]: Suma de l'àrea total coberta per les espècies afectades dels
-  episodis en cada comarca (i espècie, si el desglossat està actiu).
+1. Àrea total de coberta dels arbres [ha]: Suma de l'àrea total coberta per les espècies afectats dels
+  episodis per a cada comarca (i espècie, si el desglossat està actiu).
   
-1. Àrea total afectada [ha]: Suma total de l'àrea afectada en els episodis de cada comarca (i espècie, si el
+1. Àrea total afectada [ha]: Suma total de l'àrea afectada en els episodis per a cada comarca (i espècie, si el
   desglossat està actiu).
 
-1. Àrea total descolorida [ha]: Suma total de l'àrea descolorida en els episodis de cada comarca (i espècie,
+1. Àrea total descolorida [ha]: Suma total de l'àrea descolorida en els episodis per a cada comarca (i espècie,
   si el desglossat està actiu). Només disonible des 2014 en endavant.
   
-1. Àrea total defoliada [ha]: Suma total de l'àrea defoliada en els episodis de cada comarca (i espècie,
+1. Àrea total defoliada [ha]: Suma total de l'àrea defoliada en els episodis per a cada comarca (i espècie,
   si el desglossat està actiu). Només disonible des 2014 en endavant.
   
-1. Àrea total amb mortalitat [ha]: Suma total de l'àrea amb moratalidad present en els episodis de cada
+1. Àrea total amb mortalitat [ha]: Suma total de l'àrea amb moratalidad present en els episodis per a cada
   comarca (i espècie, si el desglossat està actiu). Només disonible des 2014 en endavant.
 
 La següent figura mostra una representació visual de les variables, a) sense desglossament per espècies, b) amb

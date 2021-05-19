@@ -25,6 +25,21 @@ deboscat_table <-
   # remove the one years that are not from 2020, as they usually are lingering rests of the cleaning
   dplyr::filter(!(episode_id %in% one_year_episodes_to_remove))
 
+# We also need to remove the species that have no affection whatsoever in any year. Lets get them
+species_zero_aff <- deboscat_table %>%
+  st_drop_geometry() %>%
+  group_by(episode_id, species_id) %>%
+  summarise(aff_sum = sum(affected_trees_perc, na.rm = TRUE)) %>%
+  filter(aff_sum < 0.1) %>%
+  mutate(remove = 'yes') %>%
+  select(-aff_sum)
+
+deboscat_table <- deboscat_table %>%
+  dplyr::left_join(species_zero_aff) %>%
+  dplyr::filter(is.na(remove)) %>%
+  dplyr::select(-remove) %>%
+  dplyr::ungroup()
+
 ## app thesaurus ####
 app_translations <- tibble::tribble(
   ~text_id, ~translation_cat, ~translation_eng, ~translation_spa,
