@@ -1,0 +1,130 @@
+---
+title: "Especificaciones técnicas"
+author: "Mireia Banqué, Víctor Granda"
+date: "18/05/2021"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+
+
+### Introducción
+
+La aplicación DEBOSCAT App nace del proyecto de Seguimiento del Estado de los Bosques de Cataluña, DEBOSCAT,
+impulsado desde el 2012[^1] por la Dirección General de Ecosistemas Forestales y Gestión del Medio. Esta
+app ofrece información anual sobre los episodios de decaimiento forestal registrados en Cataluña relacionados
+con la sequía. El seguimiento a lo largo de los años permite conocer que zonas y que especies son más
+vulnerables al cambio climático, conocer cuáles son los principales factores desencadenantes de la afectación
+y la capacidad de recuperación de la vegetación arbórea.
+
+### Metodología
+
+Los datos se han recogido anualmente desde el 2012 hasta la actualidad, durante el mes de septiembre de cada
+año, justo después de la época típicamente más seca: el verano. Los responsables de llevar a cabo la campaña
+de campo es el Cuerpo de Agentes Rurales (CAR) de Cataluña, lo que permite trabajar a escala local. Los
+Agentes hacen una prospección exhaustiva de sus bosques e introducen la información en una aplicacion online.  
+La metodología consiste en detectar, delimitar y registrar las zonas arboladas (excluyendo las superficies
+forestales que no los son, como los matorrales) que hayan estado afectadas por decaimiento. Se establece como
+zona afectada cualquier unitdad forestal de, como mínimo, 3 hectáreas donde alguna de las especies forestales
+presente síntomas de decaimiento. Para ello, se registra el episodio siempre que el porcentaje de árboles
+muertos sea como mínimo del 5%, o que el porcentaje de defoliación (pérdida de hojas respecto a las que podría
+tener el árbol si estuviese sano) y/o decoloración (hojas que no son verdes) sea como mínimo del 50%. Las
+zonas afectadas se delimitan en un mapa siguiendo criterios de homogeneidad topográfica, composición de la
+vegetacion, de los efectos observados así como de las causas del episodio.  
+Se registran aquellos episodios donde haya como mínimo una especie afectada que cumpla los criterios anteriores.
+Tambien puede haber otras especies con afectaciones menores que también son registradas. No obstante, las
+especies que no están afectadas no se muestran en la app.
+
+### Cicatrizaciones
+
+El seguimiento de los episodios registrados se hace, como mínimo, durante 3 años consecutivos. Si durante este
+tiempo la afectación del episodio mejora o se mantiene igual, se considera que el episodio está cicatrizado y
+por tanto no hace falta seguir regístrándolo. Esto explica la desparición de algunos episodios. Si pasado un
+tiempo se vuelve a detectar un empeoramiento del estado del episodio, se reabre con el mismo código
+(preferiblemente), de manera que algunos episodios pueden reaparecer.
+
+### Organización de los datos y variables de salida
+
+#### Explorador de comarcas
+
+Los datos pueden ser consultados para todos los episodios, episodios nuevos (aquellos que aparecen por primera
+vez en el año seleccionado) y epsodios antiguos (aquellos que ya están presentes en años previos al
+seleccionado). Así mismo, los datos también pueden ser desglosados por especies.
+
+  > Cuando se resume por comarcas, los datos deben ser normalizados con respecto a la cobertura de cada
+  especie y calculados con respecto al área original del episodio (ya que algunas especies pueden
+  compartir el mismo episodio). Esto significa que si todos los valores para cada especie y comarca
+  (cuando el desglosado por especies está activo) son sumados, los valores no serán los mismos que los
+  mostrados en el resumen de comarcas sin desglosado.
+
+Independientemente del desglose y el tipo de episodios seleccionados, las variables disponibles son las
+siguientes:
+
+1. Número de episodios [recuento]: Episodios registrados para el año seleccionado en cada comarca (y especie,
+  si el desglosado está activo).
+
+1. Área total del episodio [ha]: Suma del área total de los episodios delimitados por los Agentes Rurales para
+  cada comarca (y especie, si el desglosado está activo).
+  
+1. Área total de cubierta de los árboles [ha]: Suma del área total cubierta por las especies afectadas de los
+  episodios en cada comarca (y especie, si el desglosado está activo).
+  
+1. Área total afectada [ha]: Suma total del área afectada en los episodios de cada comarca (y especie, si el
+  desglosado está activo).
+
+1. Área total decolorada [ha]: Suma total del área decolorada en los episodios de cada comarca (y especie,
+  si el desglosado está activo). Solo disonible desde 2014 en adelante.
+  
+1. Área total defoliada [ha]: Suma total del área defoliada en los episodios de cada comarca (y especie,
+  si el desglosado está activo). Solo disonible desde 2014 en adelante.
+  
+1. Área total con mortalidad [ha]: Suma total del área con moratalidad presente en los episodios de cada
+  comarca (y especie, si el desglosado está activo). Solo disonible desde 2014 en adelante.
+
+La siguiente figura muestra una representación visual de las variables, a) sin desglose por especies, b) con
+desglose por especies:
+
+
+<img src="images/tech_specs_figure_1.png" width="829" style="display: block; margin: auto;" />
+
+#### Explorador de episodios
+
+El explorador de episodios ofrece los datos de cada combinación de episodio individual, año y especie. Las
+siguientes especies están disponibles:
+
+1. ID de episodio: Identificador único de cada episodio.
+
+1. Año: Año.
+
+1. Especie: Nombre de la especie.
+
+1. Comarca: Nombre de la comarca.
+
+1. ID de comarca: Identificador único de comarca.
+
+1. Cobertura [%]: Porcentaje del episodio cubierto por la especie.
+
+1. Árboles afectados [%]: Porcentaje de árboles afectados.
+
+1. Mortalidad [%]: Porcentaje de árboles muertos.
+
+1. Defoliación [%]: Porcentaje de árboles defoliados.
+
+1. Decoloración [%]: Porcentaje de árboles decolorados.
+
+1. Área del episodio [ha]: Área total del episodio.
+
+1. Episodio nuevo [lógico]: True si el episodio es nuevo en ese año, False si el episodio ya existia previamente.
+
+1. Distribución árboles afectados [texto]: Descripción de la distribución árborea en el área afectada.
+
+1. Afectación general del episodio [%]: Afectación general del episodio, calculada como:
+  $$
+  \frac{\sum_{sp=1}^{sp} (cover_{sp}*affectation_{sp})}{\sum_{sp=1}^{sp} cover_{sp}}
+  $$
+
+
+
+
+[^1]: Las primeras campañan fueron en el 2010 y el 2011, y sirvieron para probar y poner a punto la metodología.

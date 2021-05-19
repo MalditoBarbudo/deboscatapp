@@ -150,8 +150,8 @@ $(document).on('shiny:disconnected', function(event) {
       ), # End of episode explorer tab
       shiny::tabPanel(
         title = mod_tab_translateOutput('tech_specs_translation'),
-        value = 'tech_spec_panel'
-        # mod_techSpecsOutput('mod_techSpecsOutput')
+        value = 'tech_spec_panel',
+        mod_techSpecsOutput('mod_techSpecsOutput')
       )
     ) # end NavBarWithInputs
 
@@ -195,14 +195,6 @@ $(document).on('shiny:disconnected', function(event) {
       year_explorer_data_reactives, year_explorer_output_reactives,
       'county_name'
     )
-    # shiny::callModule(
-    #   mod_yearExplorerInfo, 'mod_yearExplorerInfoOutput', lang,
-    #   year_explorer_data_reactives, year_explorer_output_reactives
-    # )
-    # shiny::callModule(
-    #   mod_speciesInfo, 'mod_speciesInfoOutput', lang,
-    #   year_explorer_data_reactives, year_explorer_output_reactives
-    # )
     shiny::callModule(
       mod_saveData, 'mod_saveData_year_explorer', lang,
       year_explorer_data_reactives, data_type = 'year_explorer'
@@ -211,65 +203,9 @@ $(document).on('shiny:disconnected', function(event) {
       mod_saveData, 'mod_saveData_episode_explorer', lang,
       episode_explorer_data_reactives, data_type = 'episode_explorer'
     )
-
-
-
-
-
-
-
-
-
-    # data inputs
-    # data_reactives <- shiny::callModule(
-    #   mod_data, 'mod_dataInput', lang
-    # )
-    # # main data
-    # main_data_reactives <- shiny::callModule(
-    #   mod_mainData, 'mod_mainDataOutput',
-    #   data_reactives, map_reactives,
-    #   fesdb, lang
-    # )
-    # # viz
-    # viz_reactives <- shiny::callModule(
-    #   mod_viz, 'mod_vizInput',
-    #   data_reactives, var_thes, lang, inputs_cache
-    # )
-    # # table
-    # table_reactives <- shiny::callModule(
-    #   mod_dataTable, 'mod_dataTableOutput',
-    #   main_data_reactives, data_reactives,
-    #   var_thes, lang
-    # )
-    # # map
-    # map_reactives <- shiny::callModule(
-    #   mod_map, 'mod_mapOutput',
-    #   data_reactives, viz_reactives, main_data_reactives,
-    #   lang, var_thes
-    # )
-    # # info
-    # shiny::callModule(
-    #   mod_info, 'mod_infoUI',
-    #   map_reactives, data_reactives, viz_reactives,
-    #   var_thes, lang
-    # )
-    # # save
-    # shiny::callModule(
-    #   mod_save, 'mod_saveUI',
-    #   map_reactives, table_reactives, main_data_reactives,
-    #   lang
-    # )
-    # # help
-    # shiny::callModule(
-    #   mod_help, 'mod_helpUI',
-    #   data_reactives, viz_reactives,
-    #   var_thes, lang
-    # )
-    # # technical specifications module
-    # shiny::callModule(
-    #   mod_techSpecs, 'mod_techSpecsOutput',
-    #   lang
-    # )
+    shiny::callModule(
+      mod_techSpecs, 'mod_techSpecsOutput', lang
+    )
 
     ## tab translations ####
     shiny::callModule(
