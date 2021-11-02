@@ -3,7 +3,7 @@ Title: Shiny App for the DEBOSCAT Database
 Version: 0.0.1
 Authors@R: person("Victor", "Granda", email = "victorgrandagarcia@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0469-1991"))
 Description: Access the DEBOSCAT data interactively
-  (<http://laboratoriforestal.creaf.uab.cat>). 
+  (<http://laboratoriforestal.creaf.cat>). 
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
     pick a license
 Encoding: UTF-8
