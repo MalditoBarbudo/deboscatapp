@@ -25,7 +25,7 @@ check_old_polygons_intersect_individually <- function(geometry_col, old_polygons
       sf::st_make_valid() %>%
       purrr::map_lgl(
         .f = sf::st_intersects,
-        y = sf::st_union(old_polygons_data$geometry), sparse = FALSE
+        y = sf::st_union(sf::st_make_valid(old_polygons_data$geometry)), sparse = FALSE
       ) %>%
       magrittr::not()
   } else {
@@ -34,8 +34,9 @@ check_old_polygons_intersect_individually <- function(geometry_col, old_polygons
 }
 
 check_old_polygons_distance_individually <- function(geometry_col, old_polygons_data) {
+
   if (nrow(old_polygons_data) > 0) {
-    sf::st_distance(geometry_col, sf::st_union(old_polygons_data$geometry))[,1] %>%
+    sf::st_distance(sf::st_make_valid(geometry_col), sf::st_union(sf::st_make_valid(old_polygons_data$geometry)))[,1] %>%
       as.numeric()
   } else {
     NA
