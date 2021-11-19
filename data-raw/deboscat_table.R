@@ -15,7 +15,7 @@ one_year_episodes_to_remove <-
   summarise(episode_id = first(episode_id), year = first(year)) %>%
   group_by(episode_id) %>%
   summarise(n = n(), year = first(year)) %>%
-  filter(n < 2, year != 2020) %>%
+  filter(n < 2, year != 2021) %>%
   pull(episode_id)
 
 # temp table
