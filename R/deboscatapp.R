@@ -56,7 +56,7 @@ $(document).on('shiny:disconnected', function(event) {
     shinyjs::useShinyjs(),
 
     # use waiter and waitress
-    waiter::use_waiter(spinners = 4),
+    waiter::use_waiter(),
     waiter::use_hostess(),
 
     # css
