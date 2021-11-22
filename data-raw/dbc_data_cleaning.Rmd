@@ -1359,7 +1359,7 @@ data_dirty_2016_duplicated_species_fixed <-
         res <- episode_data %>%
           dplyr::mutate(
             species_id = dplyr::if_else(
-              species_id == 'Acer campestre' & cover_perc == 10, 'Acer monspesulanum', species_id
+              species_id == 'Acer campestre' & cover_perc == 10, 'Acer monspessulanum', species_id
             )
           )
       }

@@ -15,7 +15,7 @@ mod_yearExplorerData(input, output, session, lang, cache)
 
 \item{lang}{lang reactive}
 
-\item{cache}{memoryCache object to store the selected inputs and retrieve them when the underlying data
+\item{cache}{cache_mem object to store the selected inputs and retrieve them when the underlying data
 changes.}
 }
 \description{
