@@ -26,7 +26,7 @@ mod_yearExplorerDataInput <- function(id) {
 #'
 #' @param lang lang reactive
 #'
-#' @param cache memoryCache object to store the selected inputs and retrieve them when the underlying data
+#' @param cache cache_mem object to store the selected inputs and retrieve them when the underlying data
 #'   changes.
 #'
 #' @export
