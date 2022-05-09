@@ -88,12 +88,19 @@ mod_yearExplorer <- function(
         leaflet::providers$Esri.WorldShadedRelief,
         group = 'Relief' %>% translate_app(lang())
       ) %>%
-      # leaflet::addProviderTiles(
-      #   leaflet::providers$Esri.WorldImagery,
-      #   group = 'Imaginery' %>% translate_app(lang())
-      # ) %>%
+      leaflet::addProviderTiles(
+        leaflet::providers$Esri.WorldImagery,
+        group = 'Imaginery' %>% translate_app(lang())
+      ) %>%
       leaflet::addMapPane('counties', zIndex = 410) %>%
       leaflet::addMapPane('episodes', zIndex = 420) %>%
+      leaflet::addLayersControl(
+        baseGroups = c('Relief', 'Imaginery') %>%
+          translate_app(lang()),
+        options = leaflet::layersControlOptions(
+          collapsed = FALSE, autoZIndex = FALSE
+        )
+      ) %>%
       # counties polygons
       leaflet::addPolygons(
         data = county_map_data,

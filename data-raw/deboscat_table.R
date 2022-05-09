@@ -129,14 +129,9 @@ app_translations <- tibble::tribble(
   "affected_trees_distribution", "Distribució arbres afectats", "Affected trees distribution", "Distribución árboles afectados",
   "cicatrization_index", "Afectació genreal del episodi [%]", "General episode affectation [%]", "Afectación general del episodio [%]",
 
-
-
-
   # map
   'Relief', 'Relleu (base)', 'Relief (base)', 'Relieve (base)',
-
-
-
+  'Imaginery', 'Satèl·lit (base)', 'Imaginery (base)', 'Satélite (base)',
 
   # data version choices
   # use file selection
