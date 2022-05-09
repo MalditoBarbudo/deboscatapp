@@ -1,0 +1,2 @@
+library(deboscatapp)
+deboscatapp()
