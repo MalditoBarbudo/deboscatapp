@@ -267,23 +267,22 @@ mod_yearExplorerData <- function(
 
     if (isTRUE(species_breakdown)) {
 
-        species_choices <- yearly_report_data() %>%
-          dplyr::filter(year == year_sel) %>%
-          dplyr::pull(species_id) %>%
-          unique()
-
-        shinyWidgets::updatePickerInput(
-          session, 'year_explorer_species_sel',
-          label = translate_app('year_explorer_species_sel', lang()),
+      species_choices <- yearly_report_data() %>%
+        dplyr::filter(year == year_sel) %>%
+        dplyr::pull(species_id) %>%
+        unique()
+      shinyWidgets::updatePickerInput(
+        session, 'year_explorer_species_sel',
+        label = translate_app('year_explorer_species_sel', lang()),
+        choices = species_choices,
+        selected = cache_selected_choice(
           choices = species_choices,
-          selected = cache_selected_choice(
-            choices = species_choices,
-            cache = cache,
-            key = 'speciessel',
-            default = 'Quercus ilex'
-          )
+          cache = cache,
+          key = 'speciessel',
+          default = 'Quercus ilex'
         )
-      }
+      )
+    }
   })
   # observer to show species div and warning
   shiny::observeEvent(

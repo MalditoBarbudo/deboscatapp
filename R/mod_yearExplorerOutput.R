@@ -52,11 +52,22 @@ mod_yearExplorer <- function(
 
   # map ---------------------------------------------------------------------------------------------------
   output$year_explorer_map <- leaflet::renderLeaflet({
+
     county_map_data <- shiny::req(year_explorer_data_reactives$county_map_data)
     episodes_data <- shiny::req(year_explorer_data_reactives$episodes_data)
     var_sel <- glue::glue(
       "{year_explorer_data_reactives$var_sel}_{year_explorer_data_reactives$new_episodes_sel}"
     )
+
+    # when aggregating for county and species, we can have NAs due to no
+    # episodes when filtering by new or old
+    county_map_data <- county_map_data %>%
+      dplyr::mutate(
+        !!var_sel := dplyr::if_else(
+          is.na(!!rlang::sym(var_sel)),
+          0, !!rlang::sym(var_sel)
+        )
+      )
 
     map_palette <- leaflet::colorNumeric(
       palette = deboscat_palette(100, 'dark'),
@@ -70,7 +81,6 @@ mod_yearExplorer <- function(
       na.color = 'transparent',
       reverse = TRUE
     )
-
 
     leaflet::leaflet() %>%
       leaflet::setView(1.744, 41.726, zoom = 8) %>%
@@ -104,23 +114,34 @@ mod_yearExplorer <- function(
         )
       ) %>%
       # episodes polygons
-      leaflet::addPolygons(
-        data = episodes_data,
-        group = 'episodes',
-        label = ~episode_id,
-        layerId = ~episode_id,
-        weight = 2, smoothFactor = 1,
-        opacity = 1.0,
-        color = 'black',
-        # fill = TRUE, fillColor = 'black',
-        highlightOptions = leaflet::highlightOptions(
-          color = "#CF000F", weight = 2,
-          bringToFront = FALSE
-        ),
-        options = leaflet::pathOptions(
-          pane = 'episodes'
-        )
-      ) %>%
+      # Sometimes (when selecting old or new episodes broken down by species)
+      # episodes_data has no rows. Check it and avoid rendering the episodes
+      # polygons in that case
+      {
+        temp_map <- .
+        if (nrow(episodes_data) > 0) {
+          temp_map %>%
+            leaflet::addPolygons(
+              data = episodes_data,
+              group = 'episodes',
+              label = ~episode_id,
+              layerId = ~episode_id,
+              weight = 2, smoothFactor = 1,
+              opacity = 1.0,
+              color = 'black',
+              # fill = TRUE, fillColor = 'black',
+              highlightOptions = leaflet::highlightOptions(
+                color = "#CF000F", weight = 2,
+                bringToFront = FALSE
+              ),
+              options = leaflet::pathOptions(
+                pane = 'episodes'
+              )
+            )
+        } else {
+          temp_map
+        }
+      } %>%
       leaflet::addLegend(
         pal = map_palette_legend, values = county_map_data[[var_sel]],
         title = translate_app(var_sel, lang()),
