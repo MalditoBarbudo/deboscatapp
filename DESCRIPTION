@@ -27,6 +27,5 @@ Imports:
     purrr,
     magrittr,
     gt,
-    waiter,
     leaflet,
     DT

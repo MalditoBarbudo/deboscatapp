@@ -56,8 +56,8 @@ $(document).on('shiny:disconnected', function(event) {
     shinyjs::useShinyjs(),
 
     # use waiter and waitress
-    waiter::use_waiter(),
-    waiter::use_hostess(),
+    # waiter::use_waiter(),
+    # waiter::use_hostess(),
 
     # css
     shiny::tags$head(
