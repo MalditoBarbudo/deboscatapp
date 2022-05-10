@@ -25,7 +25,7 @@ Data has been retrieved every year since 2012 until the present, always in Septe
 season. Catalonian Rural Agents Corp (CAR) are the responsible of carrying out the field campaign, allowing
 working in a local scale. Agents perform an exhaustive survey in their forests and enter the data in an online
 app. Methodlogy consists on detect, delimit and record the tree areas (excluding shrub areas) affected by
-decay. A zone is considered affected when it has a size of at least 3 hectares, where at least one species
+decay. A zone is considered affected when it has a size of at least **3 hectares**[^2], where at least one species
 present some symptom of decay. To do that, an episode is registered if the mortality rate is at least 5% or
 defoliation rate (leaves loss respect to a healthy tree) and/or decoloration rate (no green leaves) is at
 least 50%. Affected areas are delimited in a map following topographic homogeneity, vegetation composition,
@@ -126,3 +126,5 @@ The following variables are available:
 
 
 [^1]: First campaigns were performed in 2010 and 2011, and they were used to test and improve the methodology.
+
+[^2]: For the year 2021 and episode 40-019 this limitation has been ignored.

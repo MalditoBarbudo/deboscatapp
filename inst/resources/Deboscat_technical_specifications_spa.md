@@ -26,7 +26,7 @@ de campo es el Cuerpo de Agentes Rurales (CAR) de Cataluña, lo que permite trab
 Agentes hacen una prospección exhaustiva de sus bosques e introducen la información en una aplicacion online.  
 La metodología consiste en detectar, delimitar y registrar las zonas arboladas (excluyendo las superficies
 forestales que no los son, como los matorrales) que hayan estado afectadas por decaimiento. Se establece como
-zona afectada cualquier unitdad forestal de, como mínimo, 3 hectáreas donde alguna de las especies forestales
+zona afectada cualquier unitdad forestal de, como mínimo, **3 hectáreas**[^2] donde alguna de las especies forestales
 presente síntomas de decaimiento. Para ello, se registra el episodio siempre que el porcentaje de árboles
 muertos sea como mínimo del 5%, o que el porcentaje de defoliación (pérdida de hojas respecto a las que podría
 tener el árbol si estuviese sano) y/o decoloración (hojas que no son verdes) sea como mínimo del 50%. Las
@@ -129,3 +129,5 @@ siguientes especies están disponibles:
 
 
 [^1]: Las primeras campañan fueron en el 2010 y el 2011, y sirvieron para probar y poner a punto la metodología.
+
+[^2]: Para el año 2021 y el episodio 40-019 esta limitiación ha sido ignorada.

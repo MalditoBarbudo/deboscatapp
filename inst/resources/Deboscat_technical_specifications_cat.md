@@ -26,7 +26,7 @@ d'Agents Rurals (CAR) de Catalunya, que permet que es pugui treballar a escala l
 fan una prospecció exhaustiva dels seus boscos i introdueixen la informació en una aplicació online.  
 La metodologia consisteix en detectar, delimitar i registrar les zones arbrades (s’exclouen les superfície
 forestals no arbrades com els matollars) que hagin estat afectades per decaïment.  S’estableix com a zona
-afectada qualsevol unitat forestal de, com a mínim, 3 hectàrees on alguna de les espècies forestals presenti
+afectada qualsevol unitat forestal de, com a mínim, **3 hectàrees**[^2] on alguna de les espècies forestals presenti
 símptomes de decaïment. Cal registrar l'episodi sempre que el percentatge d’arbres morts sigui, com a mínim
 del 5%, o el percentatge de defoliació (pèrdua de fulles respecte les que podria tenir el mateix arbre si
 estigués completament sa) i/o decoloració (fulles que no són verdes) sigui com a mínim del 50%. Les zones
@@ -130,3 +130,5 @@ següents espècies estan disponibles:
 
 
 [^1]: Les primeres campanyes van ser el 2010 i el 2011 i van servir per testar i posar a punt la metodologia.
+
+[^2]: Per a l'any 2021 i l'episodi 40-019, aquesta limitació ha estat ignorada.

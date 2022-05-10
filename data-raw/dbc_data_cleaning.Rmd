@@ -18,7 +18,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
-# setwd('data-raw')
+setwd('data-raw')
 ```
 
 # Libraries and functions
@@ -246,6 +246,16 @@ data_raw_2021 <-
   tidyr::separate(
     col = codi, into = c("episode_id", "year_id"), sep = 6
   ) %>%
+  # fix episode code in worng ones
+  dplyr::mutate(
+    episode_id = dplyr::case_when(
+      episode_id == "40-14-" ~ "40-014",
+      episode_id == "40-15-" ~ "40-015",
+      episode_id == "40-16-" ~ "40-016",
+      episode_id == "40-19-" ~ "40-019",
+      TRUE ~ episode_id
+    )
+  ) %>% 
   # remove especial year codes and convert to numeric with full year number
   # obtain the year from the sampling date and use it
   dplyr::mutate(
@@ -2312,6 +2322,14 @@ data_dirty_2021 <- data_dirty_2021 %>%
     .
   } %>%
   create_data_dirty(data_dirty_deboscat)
+
+#### MANUAL CHANGE!!!!!!!! This have been forced by Mireia and Jordi, to add this episode
+data_dirty_2021 <- data_dirty_2021 %>%
+  dplyr::bind_rows(
+    data_raw_2021 %>%
+      dplyr::filter(episode_id == "40-019") %>%
+      dplyr::mutate(new_episode = TRUE)
+  )
 ```
 
 ## 2021 data checks
@@ -2432,9 +2450,9 @@ data_dirty_deboscat <- data_dirty_deboscat %>%
   )
 ```
 
-## Clean data for 2018
+## Clean data for 2021
 
-Finally we have the clean data for 2018:
+Finally we have the clean data for 2021:
 
 ```{r data_clean_2021}
 data_clean_2021 <- list(
@@ -2447,7 +2465,7 @@ data_clean_2021 <- list(
 
 ## Deboscat data
 
-We need to update `data_dirty_deboscat` to store the 2018 clean data.
+We need to update `data_dirty_deboscat` to store the 2021 clean data.
 
 ```{r deboscat_update_2021}
 data_dirty_deboscat <- data_dirty_deboscat %>%
@@ -3069,6 +3087,20 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[76]], data_mud
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[77]], data_muddy_deboscat_checks)
+```
+
+  1. `r data_muddy_episodes_centroids_intersection[[78]]`: 40-018 seems to be part of the old 40-003, so I
+  dont do anything.
+
+```{r}
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[78]], data_muddy_deboscat_checks)
+```
+
+  1. `r data_muddy_episodes_centroids_intersection[[79]]`: 40-019 seems to be part of the old 40-003, so I
+  dont do anything, as before
+
+```{r}
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[79]], data_muddy_deboscat_checks)
 ```
 
 ```{r data_muddy_centroid_intersections_cleaning}
