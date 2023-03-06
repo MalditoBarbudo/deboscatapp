@@ -15,14 +15,14 @@ one_year_episodes_to_remove <-
   summarise(episode_id = first(episode_id), year = first(year)) %>%
   group_by(episode_id) %>%
   summarise(n = n(), year = first(year)) %>%
-  filter(n < 2, year != 2021) %>%
+  filter(n < 2, year != 2022) %>%
   pull(episode_id)
 
 # temp table
 deboscat_table <-
   sf::read_sf('data-raw/deboscat_table.gpkg') %>%
   sf::st_transform(crs = 4326) %>%
-  # remove the one years that are not from 2020, as they usually are lingering rests of the cleaning
+  # remove the one years that are not from the last year available, as they usually are lingering rests of the cleaning
   dplyr::filter(!(episode_id %in% one_year_episodes_to_remove))
 
 # We also need to remove the species that have no affection whatsoever in any year. Lets get them
