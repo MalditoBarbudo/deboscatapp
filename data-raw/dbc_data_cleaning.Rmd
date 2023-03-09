@@ -339,6 +339,9 @@ data_raw_2022 <-
       episode_id == "10-17-" ~ "10-017",
       episode_id == "10-19-" ~ "10-019",
       episode_id == "41-24-" ~ "41-024",
+      # episodes 00-* this year corresponds to 02-*
+      episode_id == "00-037" ~ "02-037",
+      episode_id == "00-038" ~ "02-038",
       TRUE ~ episode_id
     )
   ) %>% 
@@ -357,7 +360,7 @@ year_mismatch <- data_raw_2022 %>%
 
 Now we have the raw data, is time to create the dirty one.
 
-```{r data_dirty_2021}
+```{r data_dirty_2022}
 data_dirty_2022 <-
   data_raw_2022 %>%
   dplyr::rename(
@@ -2594,7 +2597,7 @@ Now we have an idea about how the 2022 episodes behave. Let's make the round of 
 
 ```{r data_2022_problems}
 data_dirty_2022_ok <- data_dirty_2022_checks %>%
-  dplyr::filter(check_meaning %in% c('Ok'))
+  dplyr::filter(check_meaning %in% c('Ok', 'Ok / New species others'))
 
 data_dirty_2022_new_species_others <- data_dirty_2022_checks %>%
   dplyr::filter(check_meaning == 'New species others')
@@ -2645,12 +2648,7 @@ data_clean_2022 <- list(
 ) %>%
   dplyr::bind_rows() %>%
   dplyr::arrange(episode_id, year, species_id) %>%
-  dplyr::select(!starts_with('check')) %>%
-  # manual change, there is two episodes with county code 00, we remove them until further notice.
-  # Episodes are
-  #   - 00-037
-  #   - 00-038
-  dplyr::filter(!stringr::str_detect(episode_id, "^00-"))
+  dplyr::select(!starts_with('check'))
 ```
 
 ## Deboscat data
@@ -2865,489 +2863,496 @@ So, we go one by one :(
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[2]]`: 04-036 for 2017 (which was deemed as no fix for the
-  new or error category) seems to be exactly the same as 04-004. I will remove this year from 04-036.
+  1. `r data_muddy_episodes_centroids_intersection[[2]]`: 02-037 and 02-038 are the same
+  episode duplicated. I maintain 02-037.
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[2]], data_muddy_deboscat_checks)
 ```
+  
+  1. `r data_muddy_episodes_centroids_intersection[[2+1]]`: 04-036 for 2017 (which was deemed as no fix for the
+  new or error category) seems to be exactly the same as 04-004. I will remove this year from 04-036.
+  
+```{r}
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[2+1]], data_muddy_deboscat_checks)
+```
 
-  1. `r data_muddy_episodes_centroids_intersection[[3]]`: Similar as before. But in this case is the 04-005 for
+  1. `r data_muddy_episodes_centroids_intersection[[3+1]]`: Similar as before. But in this case is the 04-005 for
   2017 and 2018 that seems to represent 04-036 in 2017. I will change this.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[3]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[3+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[4]]`: Here is strange. It seems like 04-031 from 2016 to
+  1. `r data_muddy_episodes_centroids_intersection[[4+1]]`: Here is strange. It seems like 04-031 from 2016 to
   2018 is the continuation of 04-026. I will change this.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[4]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[4+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[5]]`: 04-038 seems to be the same as 04-033. It only exist
+  1. `r data_muddy_episodes_centroids_intersection[[5+1]]`: 04-038 seems to be the same as 04-033. It only exist
   one year (2016) and is the same as 04-033. I will remove this one.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[5]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[5+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[6]]`: 04-040, new episode after several years in the same
+  1. `r data_muddy_episodes_centroids_intersection[[6+1]]`: 04-040, new episode after several years in the same
   place as 04-014. No fix here.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[6]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[6+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[7]]`: 04-029 and 04-048 new episode after several
+  1. `r data_muddy_episodes_centroids_intersection[[7+1]]`: 04-029 and 04-048 new episode after several
   years in the same place as 04-014. No fix here.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[7]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[7+1]], data_muddy_deboscat_checks)
 ```
   
-  1. `r data_muddy_episodes_centroids_intersection[[8]]`: 06-006 and 06-007. They are the same episode, but
+  1. `r data_muddy_episodes_centroids_intersection[[8+1]]`: 06-006 and 06-007. They are the same episode, but
   separated only for 2012. I'm gonna union the polygons for that year. THe values, I maintain the same, because
   the mean is really similar.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[8]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[8+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[9]]`: 06-008 and 06-015. I don't understand why they
+  1. `r data_muddy_episodes_centroids_intersection[[9+1]]`: 06-008 and 06-015. I don't understand why they
   are different episodes, but I'm not gonna fix it.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[9]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[9+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[10]]`: 06-010 and 06-018. 06-018 is crazy, it is dancing
+  1. `r data_muddy_episodes_centroids_intersection[[10+1]]`: 06-010 and 06-018. 06-018 is crazy, it is dancing
   around 06-010. Why they are different episodes is above my pay grade. No fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[10]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[10+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[11]]`: Seriously???? What do I do here???? Nothing, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[11+1]]`: Seriously???? What do I do here???? Nothing, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[11]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[11+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[12]]`: A different episode years after, no fix here
+  1. `r data_muddy_episodes_centroids_intersection[[12+1]]`: A different episode years after, no fix here
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[12]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[12+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[13]]`: Same as before, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[13+1]]`: Same as before, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[13]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[13+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[14]]`: Episodes evolving, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[14+1]]`: Episodes evolving, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[14]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[14+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[21]]`: 07-026 seems the continuation of 07-019 for 2020,
+  1. `r data_muddy_episodes_centroids_intersection[[21+1]]`: 07-026 seems the continuation of 07-019 for 2020,
   fix it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[21]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[21+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[22]]`: 10-004 polygon for 2015 is wrong, fix it.
+  1. `r data_muddy_episodes_centroids_intersection[[22+1]]`: 10-004 polygon for 2015 is wrong, fix it.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[22]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[22+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[23]]`: episode faciting another, no fix.
+  1. `r data_muddy_episodes_centroids_intersection[[23+1]]`: episode faciting another, no fix.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[23]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[23+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[24]]`: 10-040 is exactly the same as 19-040. Remove it
+  1. `r data_muddy_episodes_centroids_intersection[[24+1]]`: 10-040 is exactly the same as 19-040. Remove it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[24]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[24+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[25]]`: 10-046 is exactly the same as 19-046. Remove it
+  1. `r data_muddy_episodes_centroids_intersection[[25+1]]`: 10-046 is exactly the same as 19-046. Remove it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[25]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[25+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[26]]`: 13-004 ok, no fix here
+  1. `r data_muddy_episodes_centroids_intersection[[26+1]]`: 13-004 ok, no fix here
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[26]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[26+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[27]]`: 14-007 and 14-034 reappear in 2022, no fix here.
+  1. `r data_muddy_episodes_centroids_intersection[[27+1]]`: 14-007 and 14-034 reappear in 2022, no fix here.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[27]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[27+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[28]]`: 14-066 for 2020 is really 14-013, fix it
+  1. `r data_muddy_episodes_centroids_intersection[[28+1]]`: 14-066 for 2020 is really 14-013, fix it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[28]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[28+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[29]]`: What??, and see `r data_muddy_episodes_centroids_intersection[[32]]`
+  1. `r data_muddy_episodes_centroids_intersection[[29+1]]`: What??, and see `r data_muddy_episodes_centroids_intersection[[32+1]]`
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[29]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[29+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[30]]`: Really??, 2 episodes?? No fix
+  1. `r data_muddy_episodes_centroids_intersection[[30+1]]`: Really??, 2 episodes?? No fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[30]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[30+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[31]]`: Inexplicable, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[31+1]]`: Inexplicable, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[31]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[31+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[32]]`: Really?? and see `r data_muddy_episodes_centroids_intersection[[29]]`. It seems like the 2017 is a mix of the three, who knows.
+  1. `r data_muddy_episodes_centroids_intersection[[32+1]]`: Really?? and see `r data_muddy_episodes_centroids_intersection[[29+1]]`. It seems like the 2017 is a mix of the three, who knows.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[32]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[32+1]], data_muddy_deboscat_checks)
 create_polygon_plot_2(
-  c(data_muddy_episodes_centroids_intersection[[29]], data_muddy_episodes_centroids_intersection[[32]]),
+  c(data_muddy_episodes_centroids_intersection[[29+1]], data_muddy_episodes_centroids_intersection[[32+1]]),
   data_muddy_deboscat_checks
 )
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[33]]`: 14-078 dance around 14-075 along the years, yujuu!.
+  1. `r data_muddy_episodes_centroids_intersection[[33+1]]`: 14-078 dance around 14-075 along the years, yujuu!.
   No fix.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[33]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[33+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[34]]`: 16-002 for 2014 is a copy of 16-003, remove it
+  1. `r data_muddy_episodes_centroids_intersection[[34+1]]`: 16-002 for 2014 is a copy of 16-003, remove it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[34]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[34+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[35]]`: 19-013 reappears, but broken into 19-13 and 19-111
+  1. `r data_muddy_episodes_centroids_intersection[[35+1]]`: 19-013 reappears, but broken into 19-13 and 19-111
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[35]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[35+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[36]]`: 19-035 reappears, but as 19-112
+  1. `r data_muddy_episodes_centroids_intersection[[36+1]]`: 19-035 reappears, but as 19-112
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[36]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[36+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[37]]`: 19-036 reappears, but as 19-113
+  1. `r data_muddy_episodes_centroids_intersection[[37+1]]`: 19-036 reappears, but as 19-113
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[37]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[37+1]], data_muddy_deboscat_checks)
 ```
   
-  1. `r data_muddy_episodes_centroids_intersection[[38]]`: 19-002 is broken in two parts in 2016, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[38+1]]`: 19-002 is broken in two parts in 2016, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[38]], data_muddy_deboscat_checks)
-```
-
-  1. `r data_muddy_episodes_centroids_intersection[[39]]`: 20-012-2012 is really 20-005, fix it
-  
-```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[39]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[38+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[40]]`: Let's broke the episodes in pieces!! No fix
+  1. `r data_muddy_episodes_centroids_intersection[[39+1]]`: 20-012-2012 is really 20-005, fix it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[40]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[39+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[41]]`: 21-031-2020 in 2018 (only year available for this episode)
+  1. `r data_muddy_episodes_centroids_intersection[[40+1]]`: Let's broke the episodes in pieces!! No fix
+  
+```{r}
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[40+1]], data_muddy_deboscat_checks)
+```
+
+  1. `r data_muddy_episodes_centroids_intersection[[41+1]]`: 21-031-2020 in 2018 (only year available for this episode)
   is in reality 24-031. Fix it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[41]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[41+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[42]]`: New episode after years, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[42+1]]`: New episode after years, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[42]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[42+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[43]]`: 38-002 in 2012 is a duplicated of 23-002. Also,
+  1. `r data_muddy_episodes_centroids_intersection[[43+1]]`: 38-002 in 2012 is a duplicated of 23-002. Also,
   38-002 in 2015 is wrong and is again 23-002. Fix it.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[43]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[43+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[44]]`: 23-010 and 23-011 are exchanged in 2021. Fix it.
+  1. `r data_muddy_episodes_centroids_intersection[[44+1]]`: 23-010 and 23-011 are exchanged in 2021. Fix it.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[44]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[44+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[45]]`: 24-001 in 2012 is really 24-032. Fix it.
+  1. `r data_muddy_episodes_centroids_intersection[[45+1]]`: 24-001 in 2012 is really 24-032. Fix it.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[45]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[45+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[46]]`: 24-016 in 2019 is really 24-106. Fix it.
+  1. `r data_muddy_episodes_centroids_intersection[[46+1]]`: 24-016 in 2019 is really 24-106. Fix it.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[46]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[46+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[47]]`: Two different episodes, no fix.
+  1. `r data_muddy_episodes_centroids_intersection[[47+1]]`: Two different episodes, no fix.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[47]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[47+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[48]]`: 2Two different episodes, no fix.
+  1. `r data_muddy_episodes_centroids_intersection[[48+1]]`: 2Two different episodes, no fix.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[48]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[48+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[49]]`: 24-043 in 2012 is a duplicated of 24-044, remove
+  1. `r data_muddy_episodes_centroids_intersection[[49+1]]`: 24-043 in 2012 is a duplicated of 24-044, remove
   it.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[49]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[49+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[50]]`: Not sure what happened here, no fix.
+  1. `r data_muddy_episodes_centroids_intersection[[50+1]]`: Not sure what happened here, no fix.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[50]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[50+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[51]]`: Not sure what happened here, no fix.
+  1. `r data_muddy_episodes_centroids_intersection[[51+1]]`: Not sure what happened here, no fix.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[51]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[51+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[52]]`: 24-073-2015 is a duplicated of 24-064, remove it
+  1. `r data_muddy_episodes_centroids_intersection[[52+1]]`: 24-073-2015 is a duplicated of 24-064, remove it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[52]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[52+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[53]]`: No idea, no fix.
+  1. `r data_muddy_episodes_centroids_intersection[[53+1]]`: No idea, no fix.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[53]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[53+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[54]]`: Different episodes after years, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[54+1]]`: Different episodes after years, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[54]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[54+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[55]]`: Different episodes, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[55+1]]`: Different episodes, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[55]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[55+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[56]]`: Different episodes, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[56+1]]`: Different episodes, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[56]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[56+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[57]]`: Different episodes, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[57+1]]`: Different episodes, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[57]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[57+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[58]]`: 25-037-2016 is the same as 25-029, change it.
+  1. `r data_muddy_episodes_centroids_intersection[[58+1]]`: 25-037-2016 is the same as 25-029, change it.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[58]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[58+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[59]]`: Different episodes, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[59+1]]`: Different episodes, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[59]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[59+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[60]]`: Different episodes, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[60+1]]`: Different episodes, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[60]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[60+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[61]]`: Different episodes, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[61+1]]`: Different episodes, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[61]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[61+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[62]]`: 27-001 in 2017 is in reality 28-001. Fix it
+  1. `r data_muddy_episodes_centroids_intersection[[62+1]]`: 27-001 in 2017 is in reality 28-001. Fix it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[62]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[62+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[63]]`: No idea, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[63+1]]`: No idea, no fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[63]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[63+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[64]]`: 31-001-2012 is in reality 31-007-2015
+  1. `r data_muddy_episodes_centroids_intersection[[64+1]]`: 31-001-2012 is in reality 31-007-2015
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[64]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[64+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[65]]`: 31-007-2012 is in reality 31-001-2015
+  1. `r data_muddy_episodes_centroids_intersection[[65+1]]`: 31-007-2012 is in reality 31-001-2015
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[65]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[65+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[66]]`: 31-002-2012 is in reality 31-008-2016
+  1. `r data_muddy_episodes_centroids_intersection[[66+1]]`: 31-002-2012 is in reality 31-008-2016
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[66]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[66+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[67]]`: 31-008-2012 is in reality 31-002-2015
+  1. `r data_muddy_episodes_centroids_intersection[[67+1]]`: 31-008-2012 is in reality 31-002-2015
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[67]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[67+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[68]]`: Different episodes in different years
+  1. `r data_muddy_episodes_centroids_intersection[[68+1]]`: Different episodes in different years
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[68]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[68+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[69]]`: 31-005 in 2022 should be 31-009, fix it
+  1. `r data_muddy_episodes_centroids_intersection[[69+1]]`: 31-005 in 2022 should be 31-009, fix it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[69]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[69+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[70]]`: Different episodes in different years.
+  1. `r data_muddy_episodes_centroids_intersection[[70+1]]`: Different episodes in different years.
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[70]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[70+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[71]]`: Different episodes after one year??? No fix
+  1. `r data_muddy_episodes_centroids_intersection[[71+1]]`: Different episodes after one year??? No fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[71]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[71+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[72]]`: What the fuck??? No fix
+  1. `r data_muddy_episodes_centroids_intersection[[72+1]]`: What the fuck??? No fix
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[72]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[72+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[75]]`: Another classic, dancing episodes, come and see!!
+  1. `r data_muddy_episodes_centroids_intersection[[75+1]]`: Another classic, dancing episodes, come and see!!
   32-011 for 2014, remove it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[75]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[75+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[76]]`: 32-013 seems to be 32-017
+  1. `r data_muddy_episodes_centroids_intersection[[76+1]]`: 32-013 seems to be 32-017
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[76]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[76+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[77]]`: Different episodes
+  1. `r data_muddy_episodes_centroids_intersection[[77+1]]`: Different episodes
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[77]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[77+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[78]]`: Different episodes after years
+  1. `r data_muddy_episodes_centroids_intersection[[78+1]]`: Different episodes after years
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[78]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[78+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[79]]`: Different episodes after years
+  1. `r data_muddy_episodes_centroids_intersection[[79+1]]`: Different episodes after years
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[79]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[79+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[80]]`: 35-012 is in reality 35-013, duplicated, remove it
+  1. `r data_muddy_episodes_centroids_intersection[[80+1]]`: 35-012 is in reality 35-013, duplicated, remove it
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[80]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[80+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[81]]`: 36-032 is in reality 35-032
+  1. `r data_muddy_episodes_centroids_intersection[[81+1]]`: 36-032 is in reality 35-032
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[81]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[81+1]], data_muddy_deboscat_checks)
 ```
 
 
-  1. `r data_muddy_episodes_centroids_intersection[[82]]`: 35-039 new episode
+  1. `r data_muddy_episodes_centroids_intersection[[82+1]]`: 35-039 new episode
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[82]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[82+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[84]]`: 40-003-2012 is in reality 40-006
+  1. `r data_muddy_episodes_centroids_intersection[[84+1]]`: 40-003-2012 is in reality 40-006
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[84]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[84+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[85]]`: No idea, remove 40-005
+  1. `r data_muddy_episodes_centroids_intersection[[85+1]]`: No idea, remove 40-005
   
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[85]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[85+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[86]]`: 40-018 seems to be part of the old 40-003, so I
+  1. `r data_muddy_episodes_centroids_intersection[[86+1]]`: 40-018 seems to be part of the old 40-003, so I
   dont do anything.
 
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[86]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[86+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[87]]`: 40-019 seems to be part of the old 40-003, so I
+  1. `r data_muddy_episodes_centroids_intersection[[87+1]]`: 40-019 seems to be part of the old 40-003, so I
   dont do anything, as before
 
 ```{r}
-create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[87]], data_muddy_deboscat_checks)
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[87+1]], data_muddy_deboscat_checks)
 ```
 
 ```{r data_muddy_centroid_intersections_cleaning}
@@ -3517,7 +3522,8 @@ data_muddy_deboscat_centroids <-
     episode_id = dplyr::if_else(
       episode_id == '31-005' & year %in% c(2022), glue::glue('31-009'), episode_id
     )
-  )
+  ) %>%
+  dplyr::filter(!(episode_id == '02-038' & year == 2022))
 ```
 
 
