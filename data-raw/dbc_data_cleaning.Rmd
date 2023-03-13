@@ -2622,9 +2622,8 @@ don't intersect with old polygons:
 
 + Same episodes (distances below 5 km)
 
-  - "05-002": Seems to be the same episode, but with a polygon 3.5 km away
-  - "31-005": Seems to be the same episode, but with a polygon 1.5 km away
-
+  - "05-002" and "31-005": same episodes after 4 years. We need to assign
+  new codes.
   
 ```{r code_reuse_plots_2022}
 create_polygon_plot('05-002', data_dirty_2022, data_dirty_deboscat, data_dirty_2014_2020 %>% filter(year > 2022))
@@ -2635,7 +2634,47 @@ All this episodes are maintained as they are.
 
 ```{r error_or_new_2022_fix}
 data_dirty_2022_error_fixed <-
-  data_dirty_2022_error
+  data_dirty_2022_error |>
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == "05-002" & year %in% c(2022),
+      "05-012",
+      episode_id
+    )
+  ) |>
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == "31-005" & year %in% c(2022),
+      "31-040",
+      episode_id
+    )
+  ) |>
+  dplyr::mutate(
+    new_episode = dplyr::if_else(
+      episode_id %in% c(
+        "31-040", "05-012"
+      ),
+      TRUE,
+      new_episode
+    )
+  ) %>%
+  # New episodes that start this year must go under the test
+  {
+    temp_data <- .
+    ok_episodes <- temp_data %>%
+      dplyr::filter(
+      # 5% mortality or 40% affected
+      mortality_perc >= 5 | (decoloration_perc + defoliation_perc) >= 50,
+      # area more than 3 ha
+      episode_area >= 3
+    ) %>%
+      dplyr::pull(episode_id) %>% 
+      unique()
+    
+    temp_data %>%
+      dplyr::filter(episode_id %in% ok_episodes | !new_episode)
+  }
+
 ```
 
 ## Clean data for 2022
@@ -2647,6 +2686,71 @@ data_clean_2022 <- list(
   data_dirty_2022_ok, data_dirty_2022_new_species_others_fixed, data_dirty_2022_error_fixed
 ) %>%
   dplyr::bind_rows() %>%
+  #### fix problems detected on data checks post cleaning when all dates are
+  #### processed
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == "13-004", "13-006", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "14-034", "14-101", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "14-007", "14-102", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "19-013", "19-120", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "24-032", "24-130", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "24-064", "24-133", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "24-073", "24-135", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "26-004", "26-050", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "26-005", "26-051", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "29-002", "29-010", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "29-005", "29-011", episode_id
+    ),
+    episode_id = dplyr::if_else(
+      episode_id == "34-051", "34-101", episode_id
+    ),
+    new_episode = dplyr::if_else(
+      episode_id %in% c(
+        "13-006", "14-101", "14-102", "19-120", "24-130", "24-133", "24-135",
+        "26-050", "26-051", "29-010", "29-011", "34-101"
+      ),
+      TRUE,
+      new_episode
+    )
+  ) %>%
+  # New episodes that start this year must go under the test
+  {
+    temp_data <- .
+    ok_episodes <- temp_data %>%
+      dplyr::filter(
+      # 5% mortality or 40% affected
+      mortality_perc >= 5 | (decoloration_perc + defoliation_perc) >= 50,
+      # area more than 3 ha
+      episode_area >= 3
+    ) %>%
+      dplyr::pull(episode_id) %>% 
+      unique()
+    
+    temp_data %>%
+      dplyr::filter(episode_id %in% ok_episodes | !new_episode)
+  } %>%
+  ####
   dplyr::arrange(episode_id, year, species_id) %>%
   dplyr::select(!starts_with('check'))
 ```
@@ -2855,6 +2959,203 @@ data_muddy_episodes_centroids_intersection
 So, we go one by one :(
 
 
+### Fixes
+
+
+```{r data_muddy_centroid_intersections_cleaning}
+data_muddy_deboscat_centroids <-
+  data_muddy_deboscat %>%
+  dplyr::filter(episode_id != '02-010-2015') %>%
+  dplyr::filter(!(episode_id == '04-036' & year == 2017)) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '04-005' & year %in% c(2017,2018), glue::glue('04-036'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '04-031' & year %in% c(2016,2017,2018), glue::glue('04-026'), episode_id
+    )
+  ) %>%
+  dplyr::filter(episode_id != '04-038') %>%
+  {
+    temp <- .
+    temp %>%
+      dplyr::filter(episode_id %in% c('06-006', '06-007'), year == 2012) %>%
+      dplyr::group_by(species_id) %>%
+      dplyr::summarise(
+        geometry = sf::st_union(geometry),
+        dplyr::across(dplyr::ends_with('_perc'), ~ mean(.x, na.rm = TRUE))
+      ) -> temp_fixed
+
+    temp %>%
+      dplyr::filter(episode_id != '06-007') %>%
+      dplyr::mutate(
+        geometry = dplyr::if_else(
+          episode_id == '06-006' & year %in% c(2012), temp_fixed$geometry[1] %>% sf::st_cast('GEOMETRY'), geometry
+        ),
+        episode_area = dplyr::if_else(
+          episode_id == '06-006' & year %in% c(2012), as.numeric(sf::st_area(geometry))/10000, episode_area
+        )
+      )
+  } %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '07-026' & year %in% c(2020, 2021, 2022), glue::glue('07-019'), episode_id
+    )
+  ) %>%
+  {
+    # spatial changes
+    temp_data <- .
+  
+    poly_04 <- temp_data[which(temp_data$episode_id == '10-004' & temp_data$year == 2015), 'geometry'][[1]][1]
+    poly_05 <- temp_data[which(temp_data$episode_id == '10-005' & temp_data$year == 2015), 'geometry'][[1]][1]
+  
+    poly_04_minus_05 <- sf::st_difference(sf::st_make_valid(poly_04), sf::st_make_valid(poly_05))
+    sf::st_centroid(poly_04_minus_05)
+    # there is still a small portion that must be removed
+    poly_10_04_fixed <<- sf::st_intersection(poly_04_minus_05, sf::st_buffer(sf::st_centroid(poly_04_minus_05), 1500))
+    
+    poly_43 <- temp_data[which(temp_data$episode_id == '06-043' & temp_data$year == 2017), 'geometry'][[1]][1]
+    poly_20 <- temp_data[which(temp_data$episode_id == '06-020' & temp_data$year == 2017), 'geometry'][[1]][1]
+  
+    poly_43_minus_20 <- sf::st_difference(poly_43, poly_20)
+    sf::st_centroid(poly_43_minus_20)
+    # there is still a small portion that must be removed
+    poly_06_043_fixed <<- sf::st_intersection(poly_43_minus_20, sf::st_buffer(sf::st_centroid(poly_43_minus_20), 1000))
+    
+    temp_data %>%
+      dplyr::mutate(
+        geometry = dplyr::case_when(
+          episode_id == '06-043' & year == 2017 ~ sf::st_cast(poly_06_043_fixed, 'GEOMETRY'),
+          episode_id == '10-004' & year == 2015 ~ sf::st_cast(poly_10_04_fixed, 'GEOMETRY'),
+          TRUE ~ geometry
+        )
+      )
+  } %>%
+  dplyr::filter(episode_id != '10-040') %>%
+  dplyr::filter(episode_id != '10-046') %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '14-066' & year %in% c(2020), glue::glue('14-013'), episode_id
+    )
+  ) %>% 
+  dplyr::filter(!(episode_id == '16-002' & year == 2014)) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '20-012-2012' & year %in% c(2012), glue::glue('20-005'), episode_id
+    )
+  ) %>% 
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '21-031-2020' & year %in% c(2018), glue::glue('24-031'), episode_id
+    )
+  ) %>% 
+  dplyr::filter(!(episode_id == '38-002' & year == 2012)) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '38-002' & year %in% c(2015), glue::glue('23-002'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '23-010' & year %in% c(2021, 2022), glue::glue('23-011'), dplyr::if_else(
+      episode_id == '23-011' & year %in% c(2021, 2022), glue::glue('23-010'), episode_id
+    )
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '24-001' & year %in% c(2012), glue::glue('24-032'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '24-016' & year %in% c(2019), glue::glue('24-106'), episode_id
+    )
+  ) %>% 
+  dplyr::filter(!(episode_id == '24-043' & year == 2012)) %>% 
+  dplyr::filter(!(episode_id == '24-073-2015' & year == 2013)) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '25-037-2016' & year %in% c(2016), glue::glue('25-029'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '27-001' & year %in% c(2017), glue::glue('28-001'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '31-001-2012' & year %in% c(2012), glue::glue('31-007-2015'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '31-007-2012' & year %in% c(2012), glue::glue('31-001-2015'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '31-002-2012' & year %in% c(2012), glue::glue('31-008-2016'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '31-008-2012' & year %in% c(2012), glue::glue('31-002-2015'), episode_id
+    )
+  ) %>%
+  dplyr::filter(!(episode_id == '32-011' & year == 2014)) %>%
+  # dplyr::mutate(
+  #   episode_id = dplyr::if_else(
+  #     episode_id == '32-001' & year %in% c(2017, 2018, 2019), glue::glue('32-002-2020'), episode_id
+  #   )
+  # ) %>%
+  dplyr::filter(!(episode_id == '32-013' & year == 2019)) %>%
+  dplyr::filter(!(episode_id == '35-012' & year == 2012)) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '36-032' & year %in% c(2012), glue::glue('35-032'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '40-003-2012' & year %in% c(2012), glue::glue('40-006'), episode_id
+    )
+  ) %>%
+  dplyr::filter(!(episode_id == '40-005' & year == 2012)) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '31-005' & year %in% c(2022), glue::glue('31-009'), episode_id
+    )
+  ) %>%
+  dplyr::filter(!(episode_id == '02-038' & year == 2022)) %>%
+  dplyr::filter(!(episode_id == '14-013' & year %in% c(2020, 2021, 2022))) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '14-066' & year %in% c(2020, 2021, 2022), glue::glue('14-013'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '14-078' & year %in% c(2017:2020), glue::glue('14-059'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '24-035' & year %in% c(2017:2022), glue::glue('24-131'), episode_id
+    )
+  ) %>%
+  dplyr::mutate(
+    episode_id = dplyr::if_else(
+      episode_id == '24-039' & year %in% c(2021:2022), glue::glue('24-132'), episode_id
+    )
+  )
+```
+
+### Checks
+
   1. `r data_muddy_episodes_centroids_intersection[[1]]`: 02-010-2015 (episode that was recoded as the data for
   2015 and future didnt check out with this one), seems to be exactly the same episode as 06-024. I will remove
   02-010-2015 as it is redundant.
@@ -2906,7 +3207,7 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[6+1]], data_mu
 ```
 
   1. `r data_muddy_episodes_centroids_intersection[[7+1]]`: 04-029 and 04-048 new episode after several
-  years in the same place as 04-014. No fix here.
+  years in the same place as 04-029. No fix here.
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[7+1]], data_muddy_deboscat_checks)
@@ -2934,7 +3235,7 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[9+1]], data_mu
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[10+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[11+1]]`: Seriously???? What do I do here???? Nothing, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[11+1]]`: 06-060 seems the union of 06-010 and 06-018, no fix.
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[11+1]], data_muddy_deboscat_checks)
@@ -2946,19 +3247,19 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[11+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[12+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[13+1]]`: Same as before, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[13+1]]`: Episodes evolving, no fix
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[13+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[14+1]]`: Episodes evolving, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[14+1]]`: 06-060 seems the union of 06-010 and 06-018 and 06-016, no fix.
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[14+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[21+1]]`: 07-026 seems the continuation of 07-019 for 2020,
+  1. `r data_muddy_episodes_centroids_intersection[[21+1]]`: 07-026 seems the continuation of 07-019 from 2020 to now,
   fix it
   
 ```{r}
@@ -2971,7 +3272,7 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[21+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[22+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[23+1]]`: episode faciting another, no fix.
+  1. `r data_muddy_episodes_centroids_intersection[[23+1]]`: episode fagociting another, no fix.
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[23+1]], data_muddy_deboscat_checks)
@@ -2989,7 +3290,7 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[24+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[25+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[26+1]]`: 13-004 ok, no fix here
+  1. `r data_muddy_episodes_centroids_intersection[[26+1]]`: 13-004 in 2022 must be a new, but only if fullfill the checks
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[26+1]], data_muddy_deboscat_checks)
@@ -3001,7 +3302,7 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[26+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[27+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[28+1]]`: 14-066 for 2020 is really 14-013, fix it
+  1. `r data_muddy_episodes_centroids_intersection[[28+1]]`: 14-066 for 2020 is really 14-013, fix it. Also, in 2021 and 2022 remove 14-066.
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[28+1]], data_muddy_deboscat_checks)
@@ -3019,7 +3320,8 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[29+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[30+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[31+1]]`: Inexplicable, no fix
+  1. `r data_muddy_episodes_centroids_intersection[[31+1]]`: Change all 14-078
+  to 14-059
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[31+1]], data_muddy_deboscat_checks)
@@ -3104,13 +3406,13 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[42+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[43+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[44+1]]`: 23-010 and 23-011 are exchanged in 2021. Fix it.
+  1. `r data_muddy_episodes_centroids_intersection[[44+1]]`: 23-010 and 23-011 are exchanged in 2021 and 2022. Fix it.
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[44+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[45+1]]`: 24-001 in 2012 is really 24-032. Fix it.
+  1. `r data_muddy_episodes_centroids_intersection[[45+1]]`: 24-001 in 2012 is really 24-032. Fix it. 24-032 should be a new in 2022.
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[45+1]], data_muddy_deboscat_checks)
@@ -3153,13 +3455,13 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[50+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[51+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[52+1]]`: 24-073-2015 is a duplicated of 24-064, remove it
+  1. `r data_muddy_episodes_centroids_intersection[[52+1]]`: 24-073-2015 is a duplicated of 24-064, remove it. 24-064 in 2022 new one
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[52+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[53+1]]`: No idea, no fix.
+  1. `r data_muddy_episodes_centroids_intersection[[53+1]]`: 24-073 in 2022 is new
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[53+1]], data_muddy_deboscat_checks)
@@ -3255,7 +3557,7 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[67+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[68+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[69+1]]`: 31-005 in 2022 should be 31-009, fix it
+  1. `r data_muddy_episodes_centroids_intersection[[69+1]]`: 31-005 in 2022 sh
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[69+1]], data_muddy_deboscat_checks)
@@ -3273,7 +3575,7 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[70+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[71+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[72+1]]`: What the fuck??? No fix
+  1. `r data_muddy_episodes_centroids_intersection[[72+1]]`: No fix
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[72+1]], data_muddy_deboscat_checks)
@@ -3304,7 +3606,7 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[77+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[78+1]], data_muddy_deboscat_checks)
 ```
 
-  1. `r data_muddy_episodes_centroids_intersection[[79+1]]`: Different episodes after years
+  1. `r data_muddy_episodes_centroids_intersection[[79+1]]`: Different episodes after years. 34-051 is new in 2022
   
 ```{r}
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[79+1]], data_muddy_deboscat_checks)
@@ -3355,182 +3657,29 @@ create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[86+1]], data_m
 create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[87+1]], data_muddy_deboscat_checks)
 ```
 
-```{r data_muddy_centroid_intersections_cleaning}
-data_muddy_deboscat_centroids <-
-  data_muddy_deboscat %>%
-  dplyr::filter(episode_id != '02-010-2015') %>%
-  dplyr::filter(!(episode_id == '04-036' & year == 2017)) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '04-005' & year %in% c(2017,2018), glue::glue('04-036'), episode_id
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '04-031' & year %in% c(2016,2017,2018), glue::glue('04-026'), episode_id
-    )
-  ) %>%
-  dplyr::filter(episode_id != '04-038') %>%
-  {
-    temp <- .
-    temp %>%
-      dplyr::filter(episode_id %in% c('06-006', '06-007'), year == 2012) %>%
-      dplyr::group_by(species_id) %>%
-      dplyr::summarise(
-        geometry = sf::st_union(geometry),
-        dplyr::across(dplyr::ends_with('_perc'), ~ mean(.x, na.rm = TRUE))
-      ) -> temp_fixed
+  1. `r data_muddy_episodes_centroids_intersection[[89]]`: Change of county?? No fix
 
-    temp %>%
-      dplyr::filter(episode_id != '06-007') %>%
-      dplyr::mutate(
-        geometry = dplyr::if_else(
-          episode_id == '06-006' & year %in% c(2012), temp_fixed$geometry[1] %>% sf::st_cast('GEOMETRY'), geometry
-        ),
-        episode_area = dplyr::if_else(
-          episode_id == '06-006' & year %in% c(2012), as.numeric(sf::st_area(geometry))/10000, episode_area
-        )
-      )
-  } %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '07-026' & year %in% c(2020), glue::glue('07-019'), episode_id
-    )
-  ) %>%
-  {
-    # spatial changes
-    temp_data <- .
-  
-    poly_04 <- temp_data[which(temp_data$episode_id == '10-004' & temp_data$year == 2015), 'geometry'][[1]][1]
-    poly_05 <- temp_data[which(temp_data$episode_id == '10-005' & temp_data$year == 2015), 'geometry'][[1]][1]
-  
-    poly_04_minus_05 <- sf::st_difference(sf::st_make_valid(poly_04), sf::st_make_valid(poly_05))
-    sf::st_centroid(poly_04_minus_05)
-    # there is still a small portion that must be removed
-    poly_10_04_fixed <<- sf::st_intersection(poly_04_minus_05, sf::st_buffer(sf::st_centroid(poly_04_minus_05), 1500))
-    
-    poly_43 <- temp_data[which(temp_data$episode_id == '06-043' & temp_data$year == 2017), 'geometry'][[1]][1]
-    poly_20 <- temp_data[which(temp_data$episode_id == '06-020' & temp_data$year == 2017), 'geometry'][[1]][1]
-  
-    poly_43_minus_20 <- sf::st_difference(poly_43, poly_20)
-    sf::st_centroid(poly_43_minus_20)
-    # there is still a small portion that must be removed
-    poly_06_043_fixed <<- sf::st_intersection(poly_43_minus_20, sf::st_buffer(sf::st_centroid(poly_43_minus_20), 1000))
-    
-    temp_data %>%
-      dplyr::mutate(
-        geometry = dplyr::case_when(
-          episode_id == '06-043' & year == 2017 ~ sf::st_cast(poly_06_043_fixed, 'GEOMETRY'),
-          episode_id == '10-004' & year == 2015 ~ sf::st_cast(poly_10_04_fixed, 'GEOMETRY'),
-          TRUE ~ geometry
-        )
-      )
-  } %>%
-  dplyr::filter(episode_id != '10-040') %>%
-  dplyr::filter(episode_id != '10-046') %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '14-066' & year %in% c(2020), glue::glue('14-013'), episode_id
-    )
-  ) %>% 
-  dplyr::filter(!(episode_id == '16-002' & year == 2014)) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '20-012-2012' & year %in% c(2012), glue::glue('20-005'), episode_id
-    )
-  ) %>% 
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '21-031-2020' & year %in% c(2018), glue::glue('24-031'), episode_id
-    )
-  ) %>% 
-  dplyr::filter(!(episode_id == '38-002' & year == 2012)) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '38-002' & year %in% c(2015), glue::glue('23-002'), episode_id
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '23-010' & year %in% c(2021), glue::glue('23-011'), dplyr::if_else(
-      episode_id == '23-011' & year %in% c(2021), glue::glue('23-010'), episode_id
-    )
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '24-001' & year %in% c(2012), glue::glue('24-032'), episode_id
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '24-016' & year %in% c(2019), glue::glue('24-106'), episode_id
-    )
-  ) %>% 
-  dplyr::filter(!(episode_id == '24-043' & year == 2012)) %>% 
-  dplyr::filter(!(episode_id == '24-073-2015' & year == 2013)) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '25-037-2016' & year %in% c(2016), glue::glue('25-029'), episode_id
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '27-001' & year %in% c(2017), glue::glue('28-001'), episode_id
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '31-001-2012' & year %in% c(2012), glue::glue('31-007-2015'), episode_id
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '31-007-2012' & year %in% c(2012), glue::glue('31-001-2015'), episode_id
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '31-002-2012' & year %in% c(2012), glue::glue('31-008-2016'), episode_id
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '31-008-2012' & year %in% c(2012), glue::glue('31-002-2015'), episode_id
-    )
-  ) %>%
-  dplyr::filter(!(episode_id == '32-011' & year == 2014)) %>%
-  # dplyr::mutate(
-  #   episode_id = dplyr::if_else(
-  #     episode_id == '32-001' & year %in% c(2017, 2018, 2019), glue::glue('32-002-2020'), episode_id
-  #   )
-  # ) %>%
-  dplyr::filter(!(episode_id == '32-013' & year == 2019)) %>%
-  dplyr::filter(!(episode_id == '35-012' & year == 2012)) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '36-032' & year %in% c(2012), glue::glue('35-032'), episode_id
-    )
-  ) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '40-003-2012' & year %in% c(2012), glue::glue('40-006'), episode_id
-    )
-  ) %>%
-  dplyr::filter(!(episode_id == '40-005' & year == 2012)) %>%
-  dplyr::mutate(
-    episode_id = dplyr::if_else(
-      episode_id == '31-005' & year %in% c(2022), glue::glue('31-009'), episode_id
-    )
-  ) %>%
-  dplyr::filter(!(episode_id == '02-038' & year == 2022))
+```{r}
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[89]], data_muddy_deboscat_checks)
+```
+
+  1. `r data_muddy_episodes_centroids_intersection[[90]]`: New episode after years
+
+```{r}
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[90]], data_muddy_deboscat_checks)
+```
+
+  1. `r data_muddy_episodes_centroids_intersection[[90]]`: New episode after years
+
+```{r}
+create_polygon_plot_2(data_muddy_episodes_centroids_intersection[[90]], data_muddy_deboscat_checks)
 ```
 
 
 # Final data
 
 Now we have the data as much clean as we can. We need to codify again the new episodes (this last step
-of centroids can mess with the new/old classification), cast all geometrys as multipolygons, and create the
+of centroids can mess with the new/old classification), cast all geometries as multipolygons, and create the
 sf. Also, fix the county assignation.
 
 We also create the cicatrization index for each site/year combination, with the following formula:
