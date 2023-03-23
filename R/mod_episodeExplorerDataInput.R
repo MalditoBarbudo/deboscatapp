@@ -47,6 +47,9 @@ mod_episodeExplorerData <- function(
     county_choices <- deboscat_table %>% dplyr::pull(county_name) %>% unique()
     # initial episode choices
     episode_initial_choices <- deboscat_table %>% dplyr::pull(episode_id) %>% unique()
+    # new episodes choices
+    new_episodes_choices <- c('all', 'old', 'new') %>%
+      purrr::set_names(nm = translate_app(c('all_episodes', 'old_episodes', 'new_episodes'), lang()))
 
     # taglist
     shiny::tagList(
@@ -109,6 +112,24 @@ mod_episodeExplorerData <- function(
           tickIcon = 'glyphicon-tree-deciduous'
         )
       ),
+      shinyWidgets::pickerInput(
+        ns('episode_explorer_new_episodes_sel'),
+        label = translate_app('year_explorer_new_episodes_sel', lang()),
+        choices = new_episodes_choices,
+        options = shinyWidgets::pickerOptions(
+          actionsBox = FALSE,
+          noneSelectedText = translate_app(
+            'deselect-all-text', lang()
+          ),
+          selectedTextFormat =  'count',
+          countSelectedText =  translate_app(
+            'count-selected-text-value', lang()
+          ),
+          size = 10,
+          liveSearch = TRUE,
+          tickIcon = 'glyphicon-tree-deciduous'
+        )
+      ),
       shiny::br(),
       shiny::h4(translate_app('h4_epiexp_episode_sel', lang())),
       shinyWidgets::pickerInput(
@@ -153,6 +174,7 @@ mod_episodeExplorerData <- function(
     year_filter <- TRUE
     county_filter <- TRUE
     species_filter <- TRUE
+    new_episodes_filter <- TRUE
 
     # depending on the inputs, create the filters
     if (!is.null(input$episode_explorer_year_sel) && input$episode_explorer_year_sel != '') {
@@ -164,10 +186,18 @@ mod_episodeExplorerData <- function(
     if (!is.null(input$episode_explorer_county_sel) && input$episode_explorer_county_sel != '') {
       county_filter <- rlang::expr(county_name %in% input$episode_explorer_county_sel)
     }
+    if (!is.null(input$episode_explorer_new_episodes_sel) && input$episode_explorer_new_episodes_sel != '') {
+      new_episodes_filter <- switch(
+        input$episode_explorer_new_episodes_sel,
+        'new' = rlang::expr(new_episode),
+        'old' = rlang::expr(!new_episode),
+        'all' = TRUE
+      )
+    }
 
     # obtain the episode_id list
     deboscat_table %>%
-      dplyr::filter(!! year_filter, !! county_filter, !! species_filter) %>%
+      dplyr::filter(!! year_filter, !! county_filter, !! species_filter, !!new_episodes_filter) %>%
       dplyr::pull(episode_id) %>%
       unique()
   })
@@ -219,6 +249,7 @@ mod_episodeExplorerData <- function(
         shinyjs::reset('episode_explorer_county_sel')
         shinyjs::reset('episode_explorer_year_sel')
         shinyjs::reset('episode_explorer_species_sel')
+        shinyjs::reset('episode_explorer_new_episodes_sel')
 
       }
     }
