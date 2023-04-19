@@ -41,15 +41,15 @@ mod_saveData <- function(
 
     # labels, that depend on data_type
     save_spatial_label <- translate_app('save_spatial_label', lang())
-    save_spatial_choices <- c(csv = '.csv', spatial = '.gpkg') %>%
+    save_spatial_choices <- c(csv = '.csv', spatial = '.gpkg') |>
       rlang::set_names(~ translate_app(.x, lang()))
     save_all_label <- translate_app('save_all_label_counties', lang())
-    save_all_choices <- c(all_years = 'all', selected_years = 'selected') %>%
+    save_all_choices <- c(all_years = 'all', selected_years = 'selected') |>
       rlang::set_names(~ translate_app(.x, lang()))
 
     if (data_type == 'episode_explorer') {
       save_all_label <- translate_app('save_all_label_episodes', lang())
-      save_all_choices <- c(all_episodes = 'all', selected_episodes = 'selected') %>%
+      save_all_choices <- c(all_episodes = 'all', selected_episodes = 'selected') |>
         rlang::set_names(~ translate_app(.x, lang()))
     }
 
@@ -101,7 +101,7 @@ mod_saveData <- function(
         base_name <- glue::glue("{base_name}_species")
       }
 
-      glue::glue("{Sys.Date() %>% stringr::str_remove_all('-')}_{base_name}{input$save_spatial}")
+      glue::glue("{Sys.Date() |> stringr::str_remove_all('-')}_{base_name}{input$save_spatial}")
 
     },
     content = function(file) {

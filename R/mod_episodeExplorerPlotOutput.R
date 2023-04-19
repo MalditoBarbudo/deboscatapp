@@ -38,9 +38,9 @@ mod_episodeExplorerPlot <- function(
   output$mod_episodeExplorerPlot_container <- shiny::renderUI({
 
     ns <- session$ns
-    year_number <- shiny::req(episode_explorer_data_reactives$data) %>%
-      dplyr::pull(year) %>%
-      unique() %>%
+    year_number <- shiny::req(episode_explorer_data_reactives$data) |>
+      dplyr::pull(year) |>
+      unique() |>
       length()
     shiny::tabsetPanel(
       id = ns('episode_explorer_tabset'), type = 'pills',
@@ -109,46 +109,48 @@ mod_episodeExplorerPlot <- function(
 
   # plot --------------------------------------------------------------------------------------------------
   output$epiexp_affectation_plot <- shiny::renderPlot({
-    shiny::req(episode_explorer_data_reactives$data) %>%
+    shiny::req(episode_explorer_data_reactives$data) |>
       create_affectation_plot(lang)
   })
 
   output$epiexp_affectation_trend_plot <- shiny::renderPlot({
-    shiny::req(episode_explorer_data_reactives$data) %>%
+    shiny::req(episode_explorer_data_reactives$data) |>
       create_affectation_trend_plot(lang)
   })
 
   output$epiexp_spatial_plot <- shiny::renderPlot({
-    shiny::req(episode_explorer_data_reactives$data) %>%
+    shiny::req(episode_explorer_data_reactives$data) |>
       create_spatial_plot()
   })
 
   output$epiexp_general_info <- gt::render_gt({
-    shiny::req(episode_explorer_data_reactives$data) %>%
-      dplyr::as_tibble() %>%
-      dplyr::select(-geom) %>%
+
+    episode_id_for_pivot <- dplyr::first(episode_explorer_data_reactives$data$episode_id)
+    shiny::req(episode_explorer_data_reactives$data) |>
+      dplyr::as_tibble() |>
+      dplyr::select(-geom) |>
       dplyr::summarise(
         episode_id = dplyr::first(episode_id),
         species_number = length(unique(species_id)),
         # years_number = length(unique(year)),
         episode_starts = min(year),
         last_year_recorded = max(year)
-      ) %>%
+      ) |>
       tidyr::pivot_longer(
         cols = !episode_id,
         names_to = 'info_label',
-        values_to = .$episode_id
-      ) %>%
-      dplyr::mutate(info_label = translate_app(info_label, lang())) %>%
-      # dplyr::select(!episode_id) %>%
+        values_to = episode_id_for_pivot
+      ) |>
+      dplyr::mutate(info_label = translate_app(info_label, lang())) |>
+      # dplyr::select(!episode_id) |>
       gt::gt(
         rowname_col = 'info_label',
         groupname_col = 'episode_id'
-      ) %>%
+      ) |>
       gt::tab_style(
         style = gt::cell_fill(color = '#E8EAEB'),
         locations = list(gt::cells_body(), gt::cells_stub(), gt::cells_row_groups())
-      ) %>%
+      ) |>
       gt::tab_options(column_labels.hidden = TRUE)
 
   })
@@ -156,13 +158,13 @@ mod_episodeExplorerPlot <- function(
 
   # table -------------------------------------------------------------------------------------------------
   output$episode_explorer_table <- DT::renderDT({
-    shiny::req(episode_explorer_data_reactives$data) %>%
-      rlang::set_names(~ translate_app(.x, lang())) %>%
+    shiny::req(episode_explorer_data_reactives$data) |>
+      rlang::set_names(~ translate_app(.x, lang())) |>
       dplyr::mutate(
         dplyr::across(where(is.numeric), round, digits = 2)
-      ) %>%
-      dplyr::as_tibble() %>%
-      dplyr::select(-geom) %>%
+      ) |>
+      dplyr::as_tibble() |>
+      dplyr::select(-geom) |>
       DT::datatable(
         rownames = FALSE,
         class = 'hover order-column stripe nowrap',

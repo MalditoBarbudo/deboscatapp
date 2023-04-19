@@ -42,13 +42,13 @@ mod_episodeExplorerData <- function(
     ns <- session$ns
 
     # choices
-    year_choices <- deboscat_table %>% dplyr::pull(year) %>% unique()
-    species_choices <- deboscat_table %>% dplyr::pull(species_id) %>% unique()
-    county_choices <- deboscat_table %>% dplyr::pull(county_name) %>% unique()
+    year_choices <- deboscat_table |> dplyr::pull(year) |> unique()
+    species_choices <- deboscat_table |> dplyr::pull(species_id) |> unique()
+    county_choices <- deboscat_table |> dplyr::pull(county_name) |> unique()
     # initial episode choices
-    episode_initial_choices <- deboscat_table %>% dplyr::pull(episode_id) %>% unique()
+    episode_initial_choices <- deboscat_table |> dplyr::pull(episode_id) |> unique()
     # new episodes choices
-    new_episodes_choices <- c('all', 'old', 'new') %>%
+    new_episodes_choices <- c('all', 'old', 'new') |>
       purrr::set_names(nm = translate_app(c('all_episodes', 'old_episodes', 'new_episodes'), lang()))
 
     # taglist
@@ -196,9 +196,9 @@ mod_episodeExplorerData <- function(
     }
 
     # obtain the episode_id list
-    deboscat_table %>%
-      dplyr::filter(!! year_filter, !! county_filter, !! species_filter, !!new_episodes_filter) %>%
-      dplyr::pull(episode_id) %>%
+    deboscat_table |>
+      dplyr::filter(!! year_filter, !! county_filter, !! species_filter, !!new_episodes_filter) |>
+      dplyr::pull(episode_id) |>
       unique()
   })
 
@@ -298,7 +298,7 @@ mod_episodeExplorerData <- function(
     # get the episodes
     episodes <- input$episode_explorer_episode_sel
     # get the data
-    deboscat_table %>%
+    deboscat_table |>
       dplyr::filter(episode_id %in% episodes)
   })
 

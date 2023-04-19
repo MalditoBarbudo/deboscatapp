@@ -107,7 +107,7 @@ mod_info <- function(
 
       if (year_explorer_data_reactives$species_breakdown) {
         yearly_report_data <-
-          yearly_report_data %>%
+          yearly_report_data |>
           dplyr::filter(species_id %in% shiny::req(year_explorer_data_reactives$species_sel))
       }
 

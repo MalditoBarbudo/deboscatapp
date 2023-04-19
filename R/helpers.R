@@ -13,18 +13,18 @@ navbarPageWithInputs <- function(..., inputs) {
 
 create_affectation_plot <- function(episodes_data, lang) {
   plot_data <-
-    episodes_data %>%
-    dplyr::select(-cover_perc) %>%
+    episodes_data |>
+    dplyr::select(-cover_perc) |>
     tidyr::pivot_longer(
       dplyr::ends_with('perc'), names_to = "affectation", values_to = 'perc'
     )
 
-  legend_labels <- plot_data[['affectation']] %>%
-    unique() %>%
-    sort() %>%
+  legend_labels <- plot_data[['affectation']] |>
+    unique() |>
+    sort() |>
     translate_app(lang())
 
-  plot_data %>%
+  plot_data |>
     ggplot(aes(x = year, y = perc, fill = affectation, colour = affectation)) +
     geom_col(data = ~ dplyr::filter(.x, affectation != 'affected_trees_perc'), width = 0.4) +
     geom_line(data = ~ dplyr::filter(.x, affectation == 'affected_trees_perc'), size = 1) +
@@ -53,7 +53,7 @@ create_affectation_plot <- function(episodes_data, lang) {
 }
 
 create_affectation_trend_plot <- function(episodes_data, lang) {
-  episodes_data %>%
+  episodes_data |>
     ggplot(aes(x = year, y = cicatrization_index)) +
     geom_line(colour = deboscat_palette(3)[1], size = 1) +
     geom_point(size = 4, colour = deboscat_palette(3)[3]) +
@@ -79,10 +79,10 @@ create_affectation_trend_plot <- function(episodes_data, lang) {
 }
 
 create_spatial_plot <- function(episodes_data) {
-  episodes_data %>%
-    dplyr::select(year, episode_id, episode_area, geom) %>%
-    dplyr::group_by(year, episode_id) %>%
-    dplyr::slice(1) %>%
+  episodes_data |>
+    dplyr::select(year, episode_id, episode_area, geom) |>
+    dplyr::group_by(year, episode_id) |>
+    dplyr::slice(1) |>
     ggplot() +
     geom_sf(aes(fill = episode_area), alpha = 0.9) +
     coord_sf(datum = sf::st_crs(episodes_data)) +
@@ -111,7 +111,7 @@ create_packing_plot <- function(
 
   # preparing data
   # raw
-  raw_data <- data %>%
+  raw_data <- data |>
     dplyr::filter(year == as.numeric(year_sel))
   # affectation_variable name
   var_sel <- glue::glue("{affectation_variable}_{new_episodes}")
@@ -119,13 +119,13 @@ create_packing_plot <- function(
   type_variable <- rlang::enquo(type_variable)
   # packcircles layout and data
   packing_data <- packcircles::circleProgressiveLayout(raw_data[[var_sel]], sizetype = 'area')
-  packing_plot_data <- packcircles::circleLayoutVertices(packing_data, npoints = 100) %>%
+  packing_plot_data <- packcircles::circleLayoutVertices(packing_data, npoints = 100) |>
     dplyr::mutate(fill_val = raw_data[[var_sel]][id])
-  packing_plot_data_selected <- packing_plot_data %>%
+  packing_plot_data_selected <- packing_plot_data |>
     dplyr::filter(raw_data[[rlang::as_name(type_variable)]][id] == selected_value)
-  packing_plot_data_unselected <- packing_plot_data %>%
+  packing_plot_data_unselected <- packing_plot_data |>
     dplyr::filter(raw_data[[rlang::as_name(type_variable)]][id] != selected_value)
-  packing_text_data <- cbind(raw_data, packing_data) %>%
+  packing_text_data <- cbind(raw_data, packing_data) |>
     dplyr::filter(radius/max(radius, na.rm = TRUE) > 0.20 | !!type_variable == selected_value)
 
   # title
@@ -176,9 +176,9 @@ create_info_ts_plot <- function(
   # enquo the type_variable
   type_variable <- rlang::enquo(type_variable)
   # selected and unselected data
-  data_selected <- data %>%
+  data_selected <- data |>
     dplyr::filter(!!type_variable == selected_value)
-  data_unselected <- data %>%
+  data_unselected <- data |>
     dplyr::filter(!!type_variable != selected_value)
 
   # title
@@ -254,21 +254,28 @@ create_info_ts_plot <- function(
 #' translate the app based on the lang selected
 translate_app <- function(id, lang) {
 
-  app_translations
-
-  id %>%
-    purrr::map_chr(
-      ~ app_translations %>%
-        dplyr::filter(text_id == .x) %>% {
-          data_filtered <- .
-          if (nrow(data_filtered) < 1) {
-            message(glue::glue("{.x} not found in app thesaurus"))
-            .x
-          } else {
-            dplyr::pull(data_filtered, !! rlang::sym(glue::glue("translation_{lang}")))
-          }
-        }
+  # recursive call for vectors
+  if (length(id) > 1) {
+    res <- purrr::map_chr(
+      id,
+      .f = \(.id) {
+        translate_app(.id, lang)
+      }
     )
+    return(res)
+  }
+
+  # get id translations
+  id_row <- app_translations |>
+    dplyr::filter(text_id == id)
+
+  # return raw id if no matching id found
+  if (nrow(id_row) < 1) {
+    return(id)
+  }
+
+  # get the lang translation
+  return(dplyr::pull(id_row, glue::glue("translation_{lang}")))
 }
 
 # cache_selected_choice
@@ -301,59 +308,3 @@ deboscat_palette <- function(n, type = 'light') {
     'dark' = deboscat_palette_dark(n)
   )
 }
-
-# custom stats functions, capped to perform only with 3 or more
-# stat_capped <- function(x, .f, ...) {
-#   if (length(x[!is.na(x)]) < 3) {
-#     res <- NA_integer_
-#   } else {
-#     res <- .f(x, ...)
-#   }
-#   return(res)
-# }
-
-# custom standar error function
-# se_custom <- function(x) {
-#   sd(x[!is.na(x)])/length(x[!is.na(x)])
-# }
-
-# raw data grouping, for preset polys or custom ones
-# raw_data_grouping <- function(raw_data, data_scale, custom_polygon) {
-#
-#   # if the scale is one of the presets, group by that and return it
-#   if (!data_scale %in% c('file', 'drawn_polygon')) {
-#     res <- raw_data %>%
-#       dplyr::as_tibble() %>%
-#       dplyr::select(-geometry) %>%
-#       dplyr::group_by(!! rlang::sym(data_scale))
-#     return(res)
-#   }
-#
-#   # if scale is given by the user (file or drawn poly) then we need to
-#   # make the intersection of the data and the polygons
-#   #
-#   # get the custom polygon with the reactive and validate it
-#   custom_poly <- custom_polygon()
-#   shiny::validate(shiny::need(custom_poly, 'no custom poly'))
-#
-#   # get only the plots inside the polygons supplied
-#   # The logic is as follows:
-#   #   - get the indexes of the intersection between them
-#   #   - use that indexes to extract the poly_id from the custom poly
-#   #   - create a new column in the main data with the poly_id to summarise
-#   #     later
-#   indexes <- sf::st_intersects(raw_data, custom_poly) %>%
-#     as.numeric()
-#   polys_names <- custom_poly %>%
-#     dplyr::pull(poly_id) %>%
-#     as.character() %>%
-#     magrittr::extract(indexes)
-#
-#   res <- raw_data %>%
-#     dplyr::as_tibble() %>%
-#     dplyr::select(-geometry) %>%
-#     dplyr::mutate(poly_id = polys_names) %>%
-#     dplyr::filter(!is.na(poly_id)) %>%
-#     dplyr::group_by(poly_id)
-# }
-

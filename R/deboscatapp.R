@@ -1,6 +1,5 @@
 #' function to launch the deboscatapp
 #'
-#' @importFrom magrittr %>%
 #' @import sf
 #' @import ggplot2
 #'

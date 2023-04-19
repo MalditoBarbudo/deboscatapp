@@ -42,9 +42,9 @@ mod_yearExplorerData <- function(
     ns <- session$ns
 
     # choices
-    year_choices <- deboscat_table %>% dplyr::pull(year) %>% unique()
+    year_choices <- deboscat_table |> dplyr::pull(year) |> unique()
     species_choices <- 'Quercus ilex'
-    new_episodes_choices <- c('all', 'old', 'new') %>%
+    new_episodes_choices <- c('all', 'old', 'new') |>
       purrr::set_names(nm = translate_app(c('all_episodes', 'old_episodes', 'new_episodes'), lang()))
     var_choices <- 'affected_area'
 
@@ -180,7 +180,17 @@ mod_yearExplorerData <- function(
   })
 
 
-  # data reactives ----------------------------------------------------------------------------------------
+  # data reactives -------------------------------------------------------------------------------
+  species_breakdown_filter <- function(data, species_breakdown, species_sel) {
+    if (isTRUE(species_breakdown)) {
+      data <- data |>
+        dplyr::filter(species_id == species_sel)
+    }
+
+    return(data)
+  }
+
+
   yearly_report_data <- shiny::reactive({
 
     shiny::req(!is.null(input$year_explorer_species_breakdown))
@@ -205,16 +215,9 @@ mod_yearExplorerData <- function(
     species_breakdown <- input$year_explorer_species_breakdown
     species_sel <- input$year_explorer_species_sel
 
-    yearly_report_data() %>%
-      dplyr::filter(year == year_sel) %>% {
-        temp_data <- .
-        if (isTRUE(species_breakdown)) {
-          temp_data %>%
-            dplyr::filter(species_id == species_sel)
-        } else {
-          temp_data
-        }
-      } %>%
+    yearly_report_data() |>
+      dplyr::filter(year == year_sel) |>
+      species_breakdown_filter(species_breakdown, species_sel) |>
       dplyr::select(
         dplyr::any_of(c('year', 'county_name', 'species_id', glue::glue("{var_sel}_{new_episodes_sel}")))
       )
@@ -240,20 +243,13 @@ mod_yearExplorerData <- function(
 
     )
 
-    deboscat_table %>%
-      dplyr::filter(year == year_sel, !!new_episodes_filter) %>% {
-        temp_data <- .
-        if (isTRUE(species_breakdown)) {
-          temp_data %>%
-            dplyr::filter(species_id == species_sel)
-        } else {
-          temp_data
-        }
-      } %>%
+    deboscat_table |>
+      dplyr::filter(year == year_sel, !!new_episodes_filter) |>
+      species_breakdown_filter(species_breakdown, species_sel) |>
       dplyr::select(
         dplyr::any_of(c('episode_id'))
-      ) %>%
-      dplyr::group_by(episode_id) %>%
+      ) |>
+      dplyr::group_by(episode_id) |>
       dplyr::slice(1)
   })
 
@@ -267,9 +263,9 @@ mod_yearExplorerData <- function(
 
     if (isTRUE(species_breakdown)) {
 
-      species_choices <- yearly_report_data() %>%
-        dplyr::filter(year == year_sel) %>%
-        dplyr::pull(species_id) %>%
+      species_choices <- yearly_report_data() |>
+        dplyr::filter(year == year_sel) |>
+        dplyr::pull(species_id) |>
         unique()
       shinyWidgets::updatePickerInput(
         session, 'year_explorer_species_sel',
@@ -304,7 +300,7 @@ mod_yearExplorerData <- function(
     if (year_sel %in% c(2012, 2013)) {
       var_choices <- c(
         'number_of_episodes', 'total_episodes_area', 'total_trees_area', 'affected_area'
-      ) %>%
+      ) |>
         purrr::set_names(
           nm = translate_app(
             c('number_of_episodes', 'total_episodes_area', 'total_trees_area', 'affected_area'),
@@ -326,7 +322,7 @@ mod_yearExplorerData <- function(
       var_choices <- c(
         'number_of_episodes', 'total_episodes_area', 'total_trees_area', 'affected_area', 'decolorated_area',
         'defoliated_area', 'dead_area'
-      ) %>%
+      ) |>
         purrr::set_names(
           nm = translate_app(
             c('number_of_episodes', 'total_episodes_area', 'total_trees_area', 'affected_area', 'decolorated_area',
