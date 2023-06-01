@@ -93,7 +93,7 @@ mod_yearExplorerData <- function(
         label = translate_app('year_explorer_species_breakdown_off', lang()),
         value = FALSE,
         shape = 'round',
-        status = 'success'
+        status = 'info'
       ),
       # shinyWidgets::prettyToggle(
       #   ns('year_explorer_species_breakdown'),

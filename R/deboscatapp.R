@@ -95,6 +95,20 @@ $(document).on('shiny:disconnected', function(event) {
         )
       ),
 
+      # footer
+      footer = shiny::tags$footer(
+        shiny::fluidRow(
+          shiny::column(
+            width = 12, align = "right",
+            shiny::HTML(glue::glue(
+              '<img src="images/emf_white_logo.svg" width="120px" class="d-inline-block" alt="" loading="lazy">
+              <img src="images/creaf_white_logo.svg" width="135px" class="d-inline-block" alt="" loading="lazy">
+              <span>({lubridate::year(Sys.Date())})</span>'
+            ))
+          )
+        )
+      ),
+
       # 1. yearly report by county
       # This will be a sidebar layout. SIdebar will allow to select year and to apply or not a species
       # breakdown (warning about calculation of the data). In case of breakdown a selector of species
