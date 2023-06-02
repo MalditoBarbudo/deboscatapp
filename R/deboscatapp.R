@@ -62,13 +62,13 @@ $(document).on('shiny:disconnected', function(event) {
     shiny::tags$head(
       # js script,
       shiny::tags$script(keep_alive_script),
-      # custom css
-      shiny::includeCSS(
-        system.file('resources', 'deboscatapp.css', package = 'deboscatapp')
-      ),
       # corporative image css
       shiny::includeCSS(
-        system.file('resources', 'corp_image.css', package = 'deboscatapp')
+        system.file('apps_css', 'corp_image.css', package = 'lfcdata')
+      ),
+      # custom css
+      shiny::includeCSS(
+        system.file('apps_css', 'deboscatapp.css', package = 'lfcdata')
       )
     ),
 
