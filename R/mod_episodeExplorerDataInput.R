@@ -42,11 +42,11 @@ mod_episodeExplorerData <- function(
     ns <- session$ns
 
     # choices
-    year_choices <- deboscat_table |> dplyr::pull(year) |> unique()
-    species_choices <- deboscat_table |> dplyr::pull(species_id) |> unique()
-    county_choices <- deboscat_table |> dplyr::pull(county_name) |> unique()
+    year_choices <- deboscat_table |> dplyr::pull(year) |> unique() |> sort()
+    species_choices <- deboscat_table |> dplyr::pull(species_id) |> unique() |> sort()
+    county_choices <- deboscat_table |> dplyr::pull(county_name) |> unique() |> sort()
     # initial episode choices
-    episode_initial_choices <- deboscat_table |> dplyr::pull(episode_id) |> unique()
+    episode_initial_choices <- deboscat_table |> dplyr::pull(episode_id) |> unique() |> sort()
     # new episodes choices
     new_episodes_choices <- c('all', 'old', 'new') |>
       purrr::set_names(nm = translate_app(c('all_episodes', 'old_episodes', 'new_episodes'), lang()))

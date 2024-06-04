@@ -42,7 +42,7 @@ mod_yearExplorerData <- function(
     ns <- session$ns
 
     # choices
-    year_choices <- deboscat_table |> dplyr::pull(year) |> unique()
+    year_choices <- deboscat_table |> dplyr::pull(year) |> unique() |> sort()
     species_choices <- 'Quercus ilex'
     new_episodes_choices <- c('all', 'old', 'new') |>
       purrr::set_names(nm = translate_app(c('all_episodes', 'old_episodes', 'new_episodes'), lang()))
