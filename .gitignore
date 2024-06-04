@@ -9,4 +9,4 @@ data-raw/*.gpkg
 data-raw/*.pptx
 data-raw/.~lock*
 data-raw/*.xlsx
-
+data-raw/*.zip
