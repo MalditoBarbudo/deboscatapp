@@ -199,7 +199,7 @@ create_info_ts_plot <- function(
       data = data_unselected,
       show.legend = FALSE
     ) +
-    scale_colour_manual(palette = deboscat_palette) +
+    scale_colour_manual(values = deboscat_palette(nrow(data_unselected))) +
     geom_line(
       aes(x = year, y = !!var_sel), colour = deboscat_palette(1, 'light'), size = 1,
       data = data_selected,
