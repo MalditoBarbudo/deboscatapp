@@ -321,5 +321,3 @@ usethis::use_data(
 writexl::write_xlsx(deboscat_species_year_county_affectation_table, 'data-raw/deboscat_año_especies_comarcas.xlsx')
 writexl::write_xlsx(deboscat_species_year_affectation_table, 'data-raw/deboscat_año_especies.xlsx')
 writexl::write_xlsx(deboscat_counties_year_affectation_table, 'data-raw/deboscat_año_comarcas.xlsx')
-
-
