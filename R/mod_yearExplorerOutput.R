@@ -40,7 +40,8 @@ mod_yearExplorer <- function(
       shiny::tabPanel(
         title = translate_app('map', lang()),
         value = 'year_explorer_map_tab',
-        leaflet::leafletOutput(ns('year_explorer_map'), height = 600)
+        # leaflet::leafletOutput(ns('year_explorer_map'), height = 600)
+        mapdeck::mapdeckOutput(ns('year_explorer_map'), height = 600)
       ),
       shiny::tabPanel(
         title = translate_app('table', lang()),
@@ -51,133 +52,232 @@ mod_yearExplorer <- function(
   })
 
   # map ---------------------------------------------------------------------------------------------------
-  output$year_explorer_map <- leaflet::renderLeaflet({
+  output$year_explorer_map <- mapdeck::renderMapdeck(
+    {
+      
+      session$outputOptions("mod_yearExplorerOutput-year_explorer_map", priority = 1000)
+      mapdeck::mapdeck(
+        # style = mapdeck::mapdeck_style('dark'),
+        style = "https://raw.githubusercontent.com/CartoDB/basemap-styles/refs/heads/master/mapboxgl/dark-matter-nolabels.json",
+        location = c(1.744, 41.726), zoom = 7, pitch = 0
+      )
+    },
+    env = parent.frame()
+  )
 
-    county_map_data <- shiny::req(year_explorer_data_reactives$county_map_data)
-    episodes_data <- shiny::req(year_explorer_data_reactives$episodes_data)
-    var_sel <- glue::glue(
-      "{year_explorer_data_reactives$var_sel}_{year_explorer_data_reactives$new_episodes_sel}"
-    )
-
-    # when aggregating for county and species, we can have NAs due to no
-    # episodes when filtering by new or old
-    county_map_data <- county_map_data |>
-      dplyr::mutate(
-        !!var_sel := dplyr::if_else(
-          is.na(!!rlang::sym(var_sel)),
-          0, !!rlang::sym(var_sel)
-        )
+  shiny::observe(
+    x = {
+      county_map_data <- shiny::req(year_explorer_data_reactives$county_map_data)
+      episodes_data <- shiny::req(year_explorer_data_reactives$episodes_data)
+      var_sel <- glue::glue(
+        "{year_explorer_data_reactives$var_sel}_{year_explorer_data_reactives$new_episodes_sel}"
       )
 
-    map_palette <- leaflet::colorNumeric(
-      palette = deboscat_palette(100, 'dark'),
-      domain = county_map_data[[var_sel]],
-      na.color = 'transparent'
-    )
+      if (is.null(shiny::outputOptions(output, "year_explorer_map")$priority)) {
+        shiny::invalidateLater(1000)
+      }
 
-    map_palette_legend <- leaflet::colorNumeric(
-      palette = deboscat_palette(100, 'dark'),
-      domain = county_map_data[[var_sel]],
-      na.color = 'transparent',
-      reverse = TRUE
-    )
-
-    temp_map <- leaflet::leaflet() |>
-      leaflet::setView(1.744, 41.726, zoom = 8) |>
-      leaflet::addProviderTiles(
-        leaflet::providers$Esri.WorldShadedRelief,
-        group = 'Relief' |> translate_app(lang())
-      ) |>
-      leaflet::addProviderTiles(
-        leaflet::providers$Esri.WorldImagery,
-        group = 'Imaginery' |> translate_app(lang())
-      ) |>
-      leaflet::addProviderTiles(
-        leaflet::providers$OpenStreetMap,
-        group = 'OSM' |> translate_app(lang())
-      ) |>
-      leaflet::addProviderTiles(
-        leaflet::providers$Esri.WorldGrayCanvas,
-        group = 'WorldGrayCanvas' |> translate_app(lang())
-      ) |>
-      leaflet::addProviderTiles(
-        leaflet::providers$CartoDB.PositronNoLabels,
-        group = 'PositronNoLabels' |> translate_app(lang())
-      ) |>
-      leaflet::addMapPane('counties', zIndex = 410) |>
-      leaflet::addMapPane('episodes', zIndex = 420) |>
-      leaflet::addLayersControl(
-        baseGroups = c('Relief', 'Imaginery', 'OSM', 'WorldGrayCanvas', 'PositronNoLabels') |>
-          translate_app(lang()),
-        options = leaflet::layersControlOptions(
-          collapsed = FALSE, autoZIndex = FALSE
-        )
-      ) |>
-      # counties polygons
-      leaflet::addPolygons(
-        data = county_map_data,
-        group = 'counties',
-        label = ~county_name,
-        layerId = ~county_name,
-        weight = 1, smoothFactor = 1,
-        opacity = 1.0, fill = TRUE,
-        color = '#6C7A89FF',
-        fillColor = map_palette(county_map_data[[var_sel]]),
-        fillOpacity = 0.7,
-        highlightOptions = leaflet::highlightOptions(
-          color = "#CF000F", weight = 2,
-          bringToFront = FALSE
+      map_palette <- scales::col_numeric(
+        deboscat_palette(100, "dark"),
+        c(
+          min(county_map_data[[var_sel]], na.rm = TRUE),
+          max(county_map_data[[var_sel]], na.rm = TRUE)
         ),
-        options = leaflet::pathOptions(
-          pane = 'counties'
-        )
+        na.color = "#FFFFFF00", reverse = FALSE, alpha = TRUE
       )
 
-    # episodes polygons
-    # Sometimes (when selecting old or new episodes broken down by species)
-    # episodes_data has no rows. Check it and avoid rendering the episodes
-    # polygons in that case
-    if (nrow(episodes_data) > 0) {
-      temp_map <- temp_map |>
-        leaflet::addPolygons(
-          data = episodes_data,
-          group = 'episodes',
-          label = ~episode_id,
-          layerId = ~episode_id,
-          weight = 2, smoothFactor = 1,
-          opacity = 1.0,
-          color = 'black',
-          # fill = TRUE, fillColor = 'black',
-          highlightOptions = leaflet::highlightOptions(
-            color = "#CF000F", weight = 2,
-            bringToFront = FALSE
+      county_map_data <- county_map_data |>
+        # when aggregating for county and species, we can have NAs due to no
+        # episodes when filtering by new or old
+        dplyr::mutate(
+          !!var_sel := dplyr::if_else(
+            is.na(!!rlang::sym(var_sel)),
+            0, !!rlang::sym(var_sel)
           ),
-          options = leaflet::pathOptions(
-            pane = 'episodes'
+          # mapdeck variables
+          hex = map_palette(.data[[var_sel]]),
+          tooltip = paste0(
+            "<p>", county_name, ": ", round(.data[[var_sel]], 2), "</p>"
           )
         )
-    }
+      
+      # custom legend (to be able to show in natural order, high values up)
+      legend_js <- mapdeck::legend_element(
+        variables = rev(round(seq(
+          min(county_map_data[[var_sel]], na.rm = TRUE),
+          max(county_map_data[[var_sel]], na.rm = TRUE),
+          length.out = 10
+        ), 0)),
+        colours = scales::col_numeric(
+          deboscat_palette(10, "dark"),
+          c(min(county_map_data[[var_sel]], na.rm = TRUE), max(county_map_data[[var_sel]], na.rm = TRUE)),
+          na.color = "#FFFFFF00", reverse = TRUE, alpha = TRUE
+        )(seq(
+          min(county_map_data[[var_sel]], na.rm = TRUE),
+          max(county_map_data[[var_sel]], na.rm = TRUE),
+          length.out = 10
+        )),
+        colour_type = "fill", variable_type = "gradient",
+        title = translate_app(var_sel, lang())
+      ) |>
+        mapdeck::mapdeck_legend()
 
-    # finally add the legend
-    temp_map |>
-      leaflet::addLegend(
-        pal = map_palette_legend, values = county_map_data[[var_sel]],
-        title = translate_app(var_sel, lang()),
-        position = 'bottomright', opacity = 1,
-        labFormat = leaflet::labelFormat(
-          transform = function(x) {sort(x, decreasing = TRUE)}
+      # map update with
+      mapdeck::mapdeck_update(map_id = session$ns("year_explorer_map")) |>
+        mapdeck::clear_polygon(layer_id = "counties") |>
+        mapdeck::clear_polygon(layer_id = "episodes") |>
+        mapdeck::add_polygon(
+          data = county_map_data, layer_id = "counties",
+          tooltip = "tooltip",
+          id = "county_name",
+          stroke_colour = "hex",
+          fill_colour = "hex",
+          fill_opacity = 1,
+          auto_highlight = TRUE, highlight_colour = "#19ADCB00",
+          update_view = FALSE, focus_layer = FALSE,
+          legend = legend_js
+        ) |>
+        # episodes polygons
+        mapdeck::add_polygon(
+          data = episodes_data, layer_id = "episodes",
+          tooltip = "episode_id",
+          id = "episode_id",
+          stroke_colour = "#ff0000ff", stroke_width = 25,
+          fill_colour = "#60606080",
+          fill_opacity = 0.5,
+          auto_highlight = TRUE, highlight_colour = "#ff000080",
+          update_view = FALSE, focus_layer = FALSE
         )
-      )
-  })
+    }
+  )
+
+  # output$year_explorer_map <- leaflet::renderLeaflet({
+
+  #   county_map_data <- shiny::req(year_explorer_data_reactives$county_map_data)
+  #   episodes_data <- shiny::req(year_explorer_data_reactives$episodes_data)
+  #   var_sel <- glue::glue(
+  #     "{year_explorer_data_reactives$var_sel}_{year_explorer_data_reactives$new_episodes_sel}"
+  #   )
+
+  #   # when aggregating for county and species, we can have NAs due to no
+  #   # episodes when filtering by new or old
+  #   county_map_data <- county_map_data |>
+  #     dplyr::mutate(
+  #       !!var_sel := dplyr::if_else(
+  #         is.na(!!rlang::sym(var_sel)),
+  #         0, !!rlang::sym(var_sel)
+  #       )
+  #     )
+
+  #   map_palette <- leaflet::colorNumeric(
+  #     palette = deboscat_palette(100, 'dark'),
+  #     domain = county_map_data[[var_sel]],
+  #     na.color = 'transparent'
+  #   )
+
+  #   map_palette_legend <- leaflet::colorNumeric(
+  #     palette = deboscat_palette(100, 'dark'),
+  #     domain = county_map_data[[var_sel]],
+  #     na.color = 'transparent',
+  #     reverse = TRUE
+  #   )
+
+  #   temp_map <- leaflet::leaflet() |>
+  #     leaflet::setView(1.744, 41.726, zoom = 8) |>
+  #     leaflet::addProviderTiles(
+  #       leaflet::providers$Esri.WorldShadedRelief,
+  #       group = 'Relief' |> translate_app(lang())
+  #     ) |>
+  #     leaflet::addProviderTiles(
+  #       leaflet::providers$Esri.WorldImagery,
+  #       group = 'Imaginery' |> translate_app(lang())
+  #     ) |>
+  #     leaflet::addProviderTiles(
+  #       leaflet::providers$OpenStreetMap,
+  #       group = 'OSM' |> translate_app(lang())
+  #     ) |>
+  #     leaflet::addProviderTiles(
+  #       leaflet::providers$Esri.WorldGrayCanvas,
+  #       group = 'WorldGrayCanvas' |> translate_app(lang())
+  #     ) |>
+  #     leaflet::addProviderTiles(
+  #       leaflet::providers$CartoDB.PositronNoLabels,
+  #       group = 'PositronNoLabels' |> translate_app(lang())
+  #     ) |>
+  #     leaflet::addMapPane('counties', zIndex = 410) |>
+  #     leaflet::addMapPane('episodes', zIndex = 420) |>
+  #     leaflet::addLayersControl(
+  #       baseGroups = c('Relief', 'Imaginery', 'OSM', 'WorldGrayCanvas', 'PositronNoLabels') |>
+  #         translate_app(lang()),
+  #       options = leaflet::layersControlOptions(
+  #         collapsed = FALSE, autoZIndex = FALSE
+  #       )
+  #     ) |>
+  #     # counties polygons
+  #     leaflet::addPolygons(
+  #       data = county_map_data,
+  #       group = 'counties',
+  #       label = ~county_name,
+  #       layerId = ~county_name,
+  #       weight = 1, smoothFactor = 1,
+  #       opacity = 1.0, fill = TRUE,
+  #       color = '#6C7A89FF',
+  #       fillColor = map_palette(county_map_data[[var_sel]]),
+  #       fillOpacity = 0.7,
+  #       highlightOptions = leaflet::highlightOptions(
+  #         color = "#CF000F", weight = 2,
+  #         bringToFront = FALSE
+  #       ),
+  #       options = leaflet::pathOptions(
+  #         pane = 'counties'
+  #       )
+  #     )
+
+  #   # episodes polygons
+  #   # Sometimes (when selecting old or new episodes broken down by species)
+  #   # episodes_data has no rows. Check it and avoid rendering the episodes
+  #   # polygons in that case
+  #   if (nrow(episodes_data) > 0) {
+  #     temp_map <- temp_map |>
+  #       leaflet::addPolygons(
+  #         data = episodes_data,
+  #         group = 'episodes',
+  #         label = ~episode_id,
+  #         layerId = ~episode_id,
+  #         weight = 2, smoothFactor = 1,
+  #         opacity = 1.0,
+  #         color = 'black',
+  #         # fill = TRUE, fillColor = 'black',
+  #         highlightOptions = leaflet::highlightOptions(
+  #           color = "#CF000F", weight = 2,
+  #           bringToFront = FALSE
+  #         ),
+  #         options = leaflet::pathOptions(
+  #           pane = 'episodes'
+  #         )
+  #       )
+  #   }
+
+  #   # finally add the legend
+  #   temp_map |>
+  #     leaflet::addLegend(
+  #       pal = map_palette_legend, values = county_map_data[[var_sel]],
+  #       title = translate_app(var_sel, lang()),
+  #       position = 'bottomright', opacity = 1,
+  #       labFormat = leaflet::labelFormat(
+  #         transform = function(x) {sort(x, decreasing = TRUE)}
+  #       )
+  #     )
+  # })
 
   # observer to launch the floating plot panel when counties are clicked
   shiny::observeEvent(
-    eventExpr = input$year_explorer_map_shape_click,
+    eventExpr = input$year_explorer_map_polygon_click,
     handlerExpr = {
+      id_click <-
+        jsonlite::fromJSON(shiny::req(input$year_explorer_map_polygon_click))$layerId
 
-      click_info <- shiny::req(input$year_explorer_map_shape_click)
-
-      if (click_info$group == 'counties') {
+      if (id_click == 'polygon-counties') {
         shiny::showModal(
           shiny::modalDialog(
             mod_infoOutput('mod_infoOutput_counties'),
@@ -225,7 +325,8 @@ mod_yearExplorer <- function(
   # reactives to return -----------------------------------------------------------------------------------
   year_explorer_output_reactives <- shiny::reactiveValues()
   shiny::observe({
-    year_explorer_output_reactives$year_explorer_map_shape_click <- input$year_explorer_map_shape_click
+    year_explorer_output_reactives$year_explorer_map_shape_click <-
+      jsonlite::fromJSON(shiny::req(input$year_explorer_map_polygon_click))
   })
 
   return(year_explorer_output_reactives)

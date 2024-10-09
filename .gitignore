@@ -1,5 +1,7 @@
 .Rproj.user
 .Rhistory
+.Renviron
+.vscode
 data-raw/*.RData
 data-raw/*.html
 data-raw/*.pdf

@@ -42,7 +42,7 @@ mod_info <- function(
     selected_value <- switch(
       trigger,
       'species_id' = shiny::req(year_explorer_data_reactives$species_sel),
-      'county_name' = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id)
+      'county_name' = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$object$properties$id)
     )
     species_sel <- ""
     if (year_explorer_data_reactives$species_breakdown & trigger == 'county_name') {
@@ -79,7 +79,7 @@ mod_info <- function(
     if (trigger == 'county_name') {
       create_packing_plot(
         data = shiny::req(year_explorer_data_reactives$county_map_data),
-        selected_value = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id),
+        selected_value = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$object$properties$id),
         type_variable = county_name,
         affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
         new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),
@@ -113,7 +113,7 @@ mod_info <- function(
 
       create_info_ts_plot(
         data = yearly_report_data,
-        selected_value = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$id),
+        selected_value = shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click$object$properties$id),
         type_variable = county_name,
         affectation_variable = shiny::req(year_explorer_data_reactives$var_sel),
         new_episodes = shiny::req(year_explorer_data_reactives$new_episodes_sel),

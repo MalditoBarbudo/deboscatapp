@@ -27,4 +27,6 @@ Imports:
     purrr,
     gt,
     leaflet,
-    DT
+    DT,
+    mapdeck,
+    colourvalues

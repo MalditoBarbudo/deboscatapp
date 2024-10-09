@@ -228,7 +228,7 @@ mod_episodeExplorerData <- function(
 
       click_info <- shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click)
 
-      if (click_info$group == 'episodes') {
+      if (click_info$layerId == 'polygon-episodes') {
         # update active tab
         shiny::updateTabsetPanel(
           parent_session, 'nav', selected = 'episode_explorer'
@@ -244,7 +244,7 @@ mod_episodeExplorerData <- function(
 
       click_info <- shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click)
 
-      if (click_info$group == 'episodes') {
+      if (click_info$layerId == 'polygon-episodes') {
         # reset filter inputs
         shinyjs::reset('episode_explorer_county_sel')
         shinyjs::reset('episode_explorer_year_sel')
@@ -262,16 +262,16 @@ mod_episodeExplorerData <- function(
 
       click_info <- shiny::req(year_explorer_output_reactives$year_explorer_map_shape_click)
 
-      if (click_info$group == 'episodes') {
+      if (click_info$layerId == 'polygon-episodes') {
         # set cache manually
-        cache$set('episodesel', click_info$id)
+        cache$set('episodesel', click_info$object$properties$id)
         # update episode selector with the clicked episode
         shinyWidgets::updatePickerInput(
           session = session,
           'episode_explorer_episode_sel',
           label = translate_app('episode_explorer_episode_sel', lang()),
           choices = episode_list(),
-          selected = click_info$id
+          selected = click_info$object$properties$id
         )
       }
     }
