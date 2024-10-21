@@ -114,7 +114,9 @@ mod_saveData <- function(
           }
         } else {
           if (input$save_spatial == '.csv') {
-            readr::write_csv(data_reactives$data, file)
+            data_reactives$data |>
+              dplyr::as_tibble() |>
+              readr::write_csv(file)
           } else {
             sf::st_write(data_reactives$data, file)
           }
@@ -122,13 +124,17 @@ mod_saveData <- function(
       } else {
         if (input$save_all == 'all') {
           if (input$save_spatial == '.csv') {
-            readr::write_csv(data_reactives$yearly_report_data, file)
+            data_reactives$yearly_report_data |>
+              dplyr::as_tibble() |>
+              readr::write_csv(file)
           } else {
             sf::st_write(data_reactives$yearly_report_data, file)
           }
         } else {
           if (input$save_spatial == '.csv') {
-            readr::write_csv(data_reactives$county_map_data, file)
+            data_reactives$county_map_data |>
+              dplyr::as_tibble() |>
+              readr::write_csv(file)
           } else {
             sf::st_write(data_reactives$county_map_data, file)
           }
