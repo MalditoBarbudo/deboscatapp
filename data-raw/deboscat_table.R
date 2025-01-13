@@ -127,7 +127,7 @@ app_translations <- tibble::tribble(
   "episode_area", "Área del episodi [ha]", "Episode area [ha]", "Área del episodio [ha]",
   "new_episode", "Episodi nou", "New episode", "Episodio nuevo",
   "affected_trees_distribution", "Distribució arbres afectats", "Affected trees distribution", "Distribución árboles afectados",
-  "cicatrization_index", "Afectació genreal del episodi [%]", "General episode affectation [%]", "Afectación general del episodio [%]",
+  "cicatrization_index", "Afectació general del episodi [%]", "General episode affectation [%]", "Afectación general del episodio [%]",
 
   # map
   'Relief', 'Relleu (base)', 'Relief (base)', 'Relieve (base)',
