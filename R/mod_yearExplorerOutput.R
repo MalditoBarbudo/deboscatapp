@@ -141,10 +141,10 @@ mod_yearExplorer <- function(
           data = episodes_data, layer_id = "episodes",
           tooltip = "episode_id",
           id = "episode_id",
-          stroke_colour = "#ff0000ff", stroke_width = 25,
-          fill_colour = "#60606080",
-          fill_opacity = 0.5,
-          auto_highlight = TRUE, highlight_colour = "#ff000080",
+          stroke_colour = "#ff000080", stroke_width = 100,
+          fill_colour = "#ff000080",
+          fill_opacity = 1,
+          auto_highlight = TRUE, highlight_colour = "#ff0000ff",
           update_view = FALSE, focus_layer = FALSE
         )
     }
