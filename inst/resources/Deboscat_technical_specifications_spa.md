@@ -4,7 +4,7 @@ author: "Mireia Banqué, Víctor Granda"
 date: "18/05/2021"
 output: 
   html_document: 
-    keep_md: yes
+    keep_md: true
 ---
 
 
