@@ -15,7 +15,7 @@ one_year_episodes_to_remove <-
   summarise(episode_id = first(episode_id), year = first(year)) %>%
   group_by(episode_id) %>%
   summarise(n = n(), year = first(year)) %>%
-  filter(n < 2, year != lubridate::year(Sys.Date())) %>%
+  filter(n < 2, year != lubridate::year(Sys.Date()) - 1) %>%
   pull(episode_id)
 
 # temp table
@@ -38,7 +38,10 @@ deboscat_table <- deboscat_table %>%
   dplyr::left_join(species_zero_aff) %>%
   dplyr::filter(is.na(remove)) %>%
   dplyr::select(-remove) %>%
-  dplyr::ungroup()
+  dplyr::ungroup() %>%
+  dplyr::as_tibble() %>%
+  dplyr::distinct() %>%
+  sf::st_as_sf()
 
 ## app thesaurus ####
 app_translations <- tibble::tribble(
